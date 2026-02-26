@@ -1,79 +1,25 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Phoenix Intro: Replace Static Image with Video Animation + Synced Sound Effect",
+  "title": "Update Base Registration description in Fee Breakdown",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Replace static phoenix image with autoplay HTML5 video element, centered with fiery glow effect and smooth fade-in",
+      "summary": "Update the Base Registration description in the Fee Breakdown section to show '₹149 × 1 member' on the first line and 'Includes 1 Technical & 1 Non-Technical Event' on the second line, matching existing font style, text color, and alignment",
       "acceptanceCriteria": [
-        "No static phoenix image is rendered anywhere in the intro sequence.",
-        "A <video> element plays automatically when the intro screen mounts.",
-        "The video starts muted.",
-        "The video fades in smoothly (CSS opacity transition) from 0 to 1.",
-        "The video is centered horizontally and vertically on the screen.",
-        "A fiery orange/red glow effect is applied around the video."
+        "The Base Registration description shows '₹149 × 1 member' on the first line and 'Includes 1 Technical & 1 Non-Technical Event' on the second line.",
+        "The second line matches the font style, text color, and alignment of the existing description text.",
+        "Spacing between the two lines is visually consistent with surrounding content.",
+        "The registration amount (₹149) is unchanged.",
+        "Fee calculation logic is unchanged.",
+        "The Additional Event section is unchanged.",
+        "No layout or styling changes are made outside the description text."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/PhoenixIntro.tsx",
+          "path": "frontend/src/pages/Register.tsx",
           "operation": "modify",
-          "description": "Remove all static phoenix image rendering code. Add an HTML5 <video> element with src='/assets/phoenix.mp4', set autoPlay, muted, playsInline attributes. Position the video centered on screen using CSS flexbox or absolute positioning. Apply a CSS fade-in animation (opacity 0 to 1 transition). Add a fiery orange/red radial glow effect using box-shadow or CSS filter drop-shadow consistent with the existing phoenix theme colors."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Add synchronized audio playback that starts when video plays and stops immediately when video ends, with no looping",
-      "acceptanceCriteria": [
-        "An <audio> element is present in the intro component referencing 'phoenix-sound.mp3'.",
-        "Audio plays when the video's play event fires.",
-        "Audio volume is set to 0.5.",
-        "Audio stops immediately when the video ends.",
-        "Audio does not loop.",
-        "Audio does not continue after the intro transitions to the Home page."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/PhoenixIntro.tsx",
-          "operation": "modify",
-          "description": "Add an HTML5 <audio> element with src='/assets/phoenix-sound.mp3', loop={false}, and a ref to control it programmatically. Set the audio volume to 0.5 in a useEffect or during initialization. Attach an onPlay event handler to the <video> element that unmutes the video and calls audioRef.current.play(). Attach an onEnded event handler to the <video> element that immediately calls audioRef.current.pause() and sets audioRef.current.currentTime = 0 to stop and reset the audio."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Synchronize text animations with video playback: department text rises with phoenix, then title and subtitle appear sequentially",
-      "acceptanceCriteria": [
-        "Department name text animates upward (translateY) when the video starts playing.",
-        "'VibECX-2K26' title appears after the department text rises, with a fade-in and/or scale effect.",
-        "'2K26' subtitle appears after the main title.",
-        "All text uses Times New Roman font.",
-        "Text is clearly readable against the video background with orange/red glow styling.",
-        "Text animations are visually synchronized with the video duration (approx. 7–8 seconds)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/PhoenixIntro.tsx",
-          "operation": "modify",
-          "description": "Modify the text animation sequence to synchronize with the video playback. When the video begins playing (via the onPlay event or a state change), trigger a CSS translateY transition on the 'Department of Electronics and Communication Engineering' text to animate it upward. After the department text animation completes (use a timeout or transitionEnd event based on video duration), trigger a fade-in and scale-up effect on the 'VibECX-2K26' title. Then trigger the '2K26' subtitle appearance. Ensure all text elements use 'font-family: Times New Roman' in their CSS. Maintain the existing orange/red neon glow text-shadow styling for readability. Coordinate animation timings to match the approximate 7-8 second video duration."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Fade out entire intro screen smoothly when video ends, then navigate to Home page without loading screen",
-      "acceptanceCriteria": [
-        "When the video ends, the intro screen fades out smoothly (CSS opacity transition to 0).",
-        "After the fade-out, the app navigates directly to the Home page.",
-        "No loading screen or intermediate screen appears during the transition.",
-        "The audio is fully stopped before or during the fade-out."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/PhoenixIntro.tsx",
-          "operation": "modify",
-          "description": "In the video's onEnded event handler (after stopping and resetting the audio as per REQ-2), set a state variable to trigger a smooth fade-out transition on the entire intro container (transition opacity from 1 to 0 over ~500-1000ms). Use a setTimeout or transitionEnd event listener to wait for the fade-out to complete, then call the existing onComplete() callback to navigate to the Home page. Ensure no loading screen component is rendered or shown during this transition."
+          "description": "Locate the Fee Breakdown section where the Base Registration description currently displays '₹149 × 1 member'. Update this text to render as two lines: the first line showing '₹149 × 1 member' and the second line showing 'Includes 1 Technical & 1 Non-Technical Event'. Ensure the second line inherits the same text styling (font family, size, weight, color) and alignment as the first line. Maintain consistent vertical spacing between the lines. Do not modify the registration amount (₹149), fee calculation logic, Additional Event section, or any other layout or styling elements."
         }
       ]
     }

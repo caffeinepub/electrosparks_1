@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-phoenixintro-tsx-remove-the-static-phoenix-bird-image-entirely-replace-it-with-an-html5-video-element-that-uses-the-file-phoenix-mp4-placed-in-frontend-public-assets-as-its-source-the-video-must-be-centered-on-screen-autoplay-start-muted-and-display-with-a-smooth-css-fade-in-effect-surround-it-with-a-fiery-orange-red-radial-glow-box-shadow-or-drop-shadow-filter-consistent-with-the-existing-orange-red-phoenix-theme",
-      "featureTitle": "In PhoenixIntro.tsx, remove the static phoenix bird image entirely. Replace it with an HTML5 <video> element that uses the file 'phoenix.mp4' (placed in frontend/public/assets/) as its source. The video must be centered on screen, autoplay, start muted, and display with a smooth CSS fade-in effect. Surround it with a fiery orange/red radial glow (box-shadow or drop-shadow filter) consistent with the existing orange/red phoenix theme.",
+      "featureId": "feature-in-the-fee-breakdown-section-of-the-register-page-update-the-base-registration-description-line-from-149-1-member-to-two-lines-149-1-member-followed-by-includes-1-technical-1-non-technical-event-the-second-line-must-use-the-same-font-style-text-color-and-alignment-as-the-existing-description-text-with-consistent-spacing-do-not-change-the-registration-amount-fee-calculation-logic-additional-event-section-layout-or-any-other-styling",
+      "featureTitle": "In the Fee Breakdown section of the Register page, update the Base Registration description line from '₹149 × 1 member' to two lines: '₹149 × 1 member' followed by 'Includes 1 Technical & 1 Non-Technical Event'. The second line must use the same font style, text color, and alignment as the existing description text, with consistent spacing. Do not change the registration amount, fee calculation logic, Additional Event section, layout, or any other styling.",
       "files": [
-        "frontend/src/components/PhoenixIntro.tsx"
+        "frontend/src/pages/Register.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,66 +18,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-an-html5-audio-element-to-phoenixintro-tsx-that-uses-the-file-phoenix-sound-mp3-placed-in-frontend-public-assets-as-its-source-configure-it-with-loop-false-volume-0-5-medium-cinematic-level-when-the-video-s-onplay-event-fires-unmute-the-video-and-call-audio-play-when-the-video-s-onended-event-fires-immediately-call-audio-pause-and-reset-audio-currenttime-to-0-the-sound-must-not-loop-and-must-not-continue-playing-after-the-intro-finishes",
-      "featureTitle": "Add an HTML5 <audio> element to PhoenixIntro.tsx that uses the file 'phoenix-sound.mp3' (placed in frontend/public/assets/) as its source. Configure it with loop=false, volume=0.5 (medium/cinematic level). When the video's 'onplay' event fires, unmute the video and call audio.play(). When the video's 'onended' event fires, immediately call audio.pause() and reset audio.currentTime to 0. The sound must not loop and must not continue playing after the intro finishes.",
-      "files": [
-        "frontend/src/components/PhoenixIntro.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-synchronize-the-text-animations-in-phoenixintro-tsx-with-the-phoenix-video-playback-as-the-video-plays-1-the-text-department-of-electronics-and-communication-engineering-animates-upward-in-sync-with-the-phoenix-flight-use-a-css-translatey-transition-triggered-when-the-video-begins-playing-2-after-the-department-text-rises-the-big-title-vibecx-2k26-appears-with-a-fade-in-and-scale-up-effect-3-then-the-subtitle-2k26-appears-below-it-all-text-must-remain-in-times-new-roman-clear-and-readable-with-the-existing-orange-red-neon-glow-styling",
-      "featureTitle": "Synchronize the text animations in PhoenixIntro.tsx with the phoenix video playback. As the video plays: (1) The text 'Department of Electronics and Communication Engineering' animates upward in sync with the phoenix flight — use a CSS translateY transition triggered when the video begins playing. (2) After the department text rises, the big title 'VibECX-2K26' appears with a fade-in and scale-up effect. (3) Then the subtitle '2K26' appears below it. All text must remain in Times New Roman, clear and readable, with the existing orange/red neon glow styling.",
-      "files": [
-        "frontend/src/components/PhoenixIntro.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-in-the-video-s-onended-event-handler-inside-phoenixintro-tsx-after-stopping-the-audio-trigger-a-smooth-full-screen-fade-out-opacity-0-transition-on-the-entire-intro-container-then-call-the-existing-oncomplete-callback-to-navigate-to-the-home-page-there-must-be-no-loading-screen-between-the-intro-and-the-home-page",
-      "featureTitle": "In the video's 'onended' event handler inside PhoenixIntro.tsx, after stopping the audio, trigger a smooth full-screen fade-out (opacity 0) transition on the entire intro container, then call the existing onComplete() callback to navigate to the Home page. There must be no loading screen between the intro and the Home page.",
-      "files": [
-        "frontend/src/components/PhoenixIntro.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

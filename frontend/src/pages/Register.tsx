@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useRegistration } from '../contexts/RegistrationContext';
 import CircuitPattern from '../components/CircuitPattern';
@@ -34,6 +34,15 @@ export default function Register() {
   const total = additionalEventChecked
     ? EXTRA_PRICE * form.numberOfMembers
     : BASE_PRICE * form.numberOfMembers;
+
+  // Sync the calculated total to localStorage in real time so the Payment page
+  // always reads the latest amount without any manual step.
+  useEffect(() => {
+    const calculatedTotal = additionalEventChecked
+      ? EXTRA_PRICE * form.numberOfMembers
+      : BASE_PRICE * form.numberOfMembers;
+    localStorage.setItem('vibecxAmount', calculatedTotal.toString());
+  }, [form.numberOfMembers, additionalEventChecked]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -412,39 +421,100 @@ export default function Register() {
                   Fee Breakdown
                 </p>
 
-                {/* Line 1: Base Registration Fee */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-                  <div>
-                    <span style={{ color: '#C8A870', fontSize: '0.92rem' }}>Base Registration</span>
-                    <span style={{ color: '#7A6040', fontSize: '0.78rem', display: 'block', marginTop: '1px' }}>
-                      ₹149 × {form.numberOfMembers} member{form.numberOfMembers > 1 ? 's' : ''}
+                {/* Base Registration */}
+                <div style={{ marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <span style={{
+                        color: '#C8A870',
+                        fontSize: '0.95rem',
+                        fontFamily: '"Times New Roman", Times, serif',
+                      }}>
+                        Base Registration
+                      </span>
+                      <div style={{
+                        color: '#C8A870',
+                        fontSize: '0.95rem',
+                        fontFamily: '"Times New Roman", Times, serif',
+                        marginTop: '2px',
+                      }}>
+                        ₹{BASE_PRICE} × {form.numberOfMembers} member{form.numberOfMembers > 1 ? 's' : ''}
+                        <br />
+                        <span style={{
+                          color: '#C8A870',
+                          fontSize: '0.95rem',
+                          fontFamily: '"Times New Roman", Times, serif',
+                        }}>
+                          Includes 1 Technical &amp; 1 Non-Technical Event
+                        </span>
+                      </div>
+                    </div>
+                    <span style={{
+                      color: '#F0E0C0',
+                      fontSize: '0.95rem',
+                      fontWeight: '700',
+                      fontFamily: '"Times New Roman", Times, serif',
+                      marginLeft: '16px',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      ₹{BASE_PRICE * form.numberOfMembers}
                     </span>
                   </div>
-                  <span style={{ color: additionalEventChecked ? '#4A3820' : '#C8A870', fontSize: '0.92rem', fontWeight: '600', marginLeft: '16px' }}>
-                    {additionalEventChecked ? '—' : `₹${BASE_PRICE * form.numberOfMembers}`}
-                  </span>
                 </div>
 
-                {/* Line 2: Additional Event Fee */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '10px' }}>
-                  <div>
-                    <span style={{ color: '#C8A870', fontSize: '0.92rem' }}>Additional Event</span>
-                    <span style={{ color: '#7A6040', fontSize: '0.78rem', display: 'block', marginTop: '1px' }}>
-                      ₹25 × {form.numberOfMembers} member{form.numberOfMembers > 1 ? 's' : ''}
+                {/* Additional Event */}
+                <div style={{ marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{
+                      color: '#C8A870',
+                      fontSize: '0.95rem',
+                      fontFamily: '"Times New Roman", Times, serif',
+                    }}>
+                      Additional Event
+                      <span style={{ color: '#A08060', fontSize: '0.85rem', marginLeft: '6px' }}>
+                        (₹{EXTRA_PRICE} × {form.numberOfMembers})
+                      </span>
+                    </span>
+                    <span style={{
+                      color: additionalEventChecked ? '#F0E0C0' : '#706050',
+                      fontSize: '0.95rem',
+                      fontWeight: '700',
+                      fontFamily: '"Times New Roman", Times, serif',
+                      marginLeft: '16px',
+                    }}>
+                      {additionalEventChecked ? `₹${additionalFeeDisplay}` : '—'}
                     </span>
                   </div>
-                  <span style={{ color: additionalEventChecked ? '#FFD700' : '#4A3820', fontSize: '0.92rem', fontWeight: '600', marginLeft: '16px' }}>
-                    {additionalEventChecked ? `₹${additionalFeeDisplay}` : '—'}
-                  </span>
                 </div>
 
                 {/* Divider */}
-                <div style={{ height: '1px', background: 'rgba(255,106,0,0.2)', marginBottom: '10px' }} />
+                <div style={{
+                  height: '1px',
+                  background: 'rgba(255,106,0,0.25)',
+                  margin: '10px 0',
+                }} />
 
-                {/* Total line */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <span style={{ color: '#FF8C00', fontSize: '0.95rem', fontWeight: '700' }}>Total</span>
-                  <span style={{ color: '#FFD700', fontSize: '1.1rem', fontWeight: '800' }}>₹{total}</span>
+                {/* Total */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{
+                    color: '#FF8C00',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    fontFamily: '"Times New Roman", Times, serif',
+                    letterSpacing: '0.05em',
+                    textTransform: 'uppercase',
+                  }}>
+                    Total
+                  </span>
+                  <span style={{
+                    color: '#FFD700',
+                    fontSize: '1.3rem',
+                    fontWeight: '900',
+                    fontFamily: '"Times New Roman", Times, serif',
+                    textShadow: '0 0 12px rgba(255,200,0,0.5)',
+                  }}>
+                    ₹{total}
+                  </span>
                 </div>
               </div>
             </div>
@@ -456,29 +526,29 @@ export default function Register() {
             style={{
               marginTop: '32px',
               width: '100%',
+              padding: '16px',
               background: 'linear-gradient(135deg, #FF6A00, #FF2200)',
               border: 'none',
               borderRadius: '10px',
               color: '#FFFFFF',
               fontFamily: '"Times New Roman", Times, serif',
-              fontSize: '1.15rem',
-              fontWeight: '800',
-              padding: '16px',
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              letterSpacing: '0.08em',
               cursor: 'pointer',
-              boxShadow: '0 0 20px rgba(255,106,0,0.4)',
-              transition: 'all 0.3s ease',
-              letterSpacing: '0.05em',
+              boxShadow: '0 0 20px rgba(255,69,0,0.4)',
+              transition: 'opacity 0.2s, box-shadow 0.2s',
             }}
             onMouseEnter={e => {
-              (e.target as HTMLButtonElement).style.boxShadow = '0 0 30px rgba(255,106,0,0.6)';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+              (e.target as HTMLButtonElement).style.opacity = '0.9';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 0 30px rgba(255,69,0,0.6)';
             }}
             onMouseLeave={e => {
-              (e.target as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(255,106,0,0.4)';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.opacity = '1';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(255,69,0,0.4)';
             }}
           >
-            Proceed to Payment — ₹{total}
+            Proceed to Payment →
           </button>
         </form>
       </div>

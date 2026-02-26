@@ -30,6 +30,31 @@ export default function Home() {
 
   return (
     <div style={{ background: '#000000', minHeight: '100vh', fontFamily: '"Times New Roman", Times, serif' }}>
+      {/* Shine keyframe animation + hero-section responsive styles */}
+      <style>{`
+        @keyframes vibecx-shine {
+          0% { background-position: -200px center; }
+          100% { background-position: 200px center; }
+        }
+        .hero-title-section {
+          transform: translateY(-40px);
+          transform-origin: center top;
+        }
+        .vibecx-main-title {
+          font-size: clamp(58px, 8.5vw, 120px);
+          white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+          .hero-title-section {
+            transform: translateY(-40px);
+          }
+          .vibecx-main-title {
+            font-size: clamp(38px, 7vw, 70px);
+            white-space: normal;
+          }
+        }
+      `}</style>
+
       {/* Hero Section */}
       <section style={{
         position: 'relative',
@@ -47,115 +72,125 @@ export default function Home() {
           pointerEvents: 'none',
         }} />
 
-        <div ref={heroRef} style={{ textAlign: 'center', position: 'relative', zIndex: 2, maxWidth: '900px' }}>
-          {/* College badge */}
-          <div style={{
-            display: 'inline-block',
-            border: '1px solid rgba(255,106,0,0.4)',
-            borderRadius: '30px',
-            padding: '8px 24px',
-            marginBottom: '24px',
-            background: 'rgba(255,106,0,0.05)',
-          }}>
-            <span style={{ color: '#FF8C00', fontSize: '0.9rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-              Suguna College of Engineering
-            </span>
-          </div>
+        {/* Hero title section wrapper — shifted downward slightly */}
+        <div className="hero-title-section" style={{ position: 'relative', zIndex: 2 }}>
+          <div ref={heroRef} style={{ textAlign: 'center', maxWidth: '900px' }}>
+            {/* College badge */}
+            <div style={{
+              display: 'inline-block',
+              border: '1px solid rgba(255,106,0,0.4)',
+              borderRadius: '30px',
+              padding: '8px 24px',
+              marginBottom: '24px',
+              background: 'rgba(255,106,0,0.05)',
+            }}>
+              <span style={{ color: '#FF8C00', fontSize: '0.9rem', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+                Suguna College of Engineering
+              </span>
+            </div>
 
-          {/* Department */}
-          <p style={{
-            color: '#C8A870',
-            fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            marginBottom: '16px',
-            fontWeight: '600',
-          }}>
-            Department of Electronics and Communication Engineering
-          </p>
+            {/* Department */}
+            <p style={{
+              color: '#C8A870',
+              fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+              fontWeight: '600',
+            }}>
+              Department of Electronics and Communication Engineering
+            </p>
 
-          {/* Main Title */}
-          <h1 style={{
-            fontSize: 'clamp(3.5rem, 12vw, 8rem)',
-            fontWeight: '900',
-            margin: '0 0 16px 0',
-            background: 'linear-gradient(135deg, #FFD700 0%, #FF8C00 30%, #FF4500 65%, #FF2200 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0 0 30px rgba(255,106,0,0.5))',
-            lineHeight: 1,
-            letterSpacing: '0.03em',
-          }}>
-            VibECX-2K26
-          </h1>
-
-          {/* Subtitle line */}
-          <div style={{
-            width: '300px', height: '3px',
-            background: 'linear-gradient(90deg, transparent, #FF6A00, #FF2200, #FF6A00, transparent)',
-            margin: '0 auto 24px',
-            boxShadow: '0 0 15px #FF4500',
-          }} />
-
-          <p style={{
-            color: '#A08060',
-            fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
-            marginBottom: '40px',
-            lineHeight: 1.6,
-          }}>
-            The Ultimate ECE Symposium — Where Innovation Meets Excellence
-          </p>
-
-          {/* CTA Buttons */}
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => navigate({ to: '/register' })}
+            {/* Main Title — 3D metallic racing-style */}
+            <h1
+              className="vibecx-main-title"
               style={{
-                background: 'linear-gradient(135deg, #FF6A00, #FF2200)',
-                border: 'none', borderRadius: '8px',
-                color: '#FFFFFF', fontFamily: '"Times New Roman", Times, serif',
-                fontSize: '1.1rem', fontWeight: '700',
-                padding: '14px 36px', cursor: 'pointer',
-                boxShadow: '0 0 20px rgba(255,106,0,0.4)',
-                transition: 'all 0.3s ease',
-                display: 'flex', alignItems: 'center', gap: '8px',
-                letterSpacing: '0.05em',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 35px rgba(255,106,0,0.7)';
-                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(255,106,0,0.4)';
-                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+                fontFamily: '"Times New Roman", serif',
+                fontWeight: 900,
+                letterSpacing: '3px',
+                margin: '0 0 16px 0',
+                lineHeight: 1,
+                background: 'linear-gradient(to bottom, #fff6c7 0%, #ffb300 25%, #ff4d00 55%, #b30000 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 2px 0 #7a1a00, 0 4px 8px rgba(0,0,0,0.6), 0 0 25px rgba(255,80,0,0.7), 0 0 45px rgba(255,40,0,0.6)',
+                transform: 'skewX(-5deg)',
+                backgroundSize: '200% auto',
+                animation: 'vibecx-shine 4s linear infinite',
+                display: 'block',
               }}
             >
-              Register Now <ChevronRight size={18} />
-            </button>
-            <button
-              onClick={() => navigate({ to: '/technical' })}
-              style={{
-                background: 'transparent',
-                border: '2px solid rgba(255,106,0,0.6)',
-                borderRadius: '8px',
-                color: '#FF8C00', fontFamily: '"Times New Roman", Times, serif',
-                fontSize: '1.1rem', fontWeight: '600',
-                padding: '14px 36px', cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                letterSpacing: '0.05em',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,106,0,0.1)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#FF6A00';
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,106,0,0.6)';
-              }}
-            >
-              Explore Events
-            </button>
+              VibECX-2K26
+            </h1>
+
+            {/* Subtitle line */}
+            <div style={{
+              width: '300px', height: '3px',
+              background: 'linear-gradient(90deg, transparent, #FF6A00, #FF2200, #FF6A00, transparent)',
+              margin: '0 auto 24px',
+              boxShadow: '0 0 15px #FF4500',
+            }} />
+
+            <p style={{
+              color: '#A08060',
+              fontSize: 'clamp(1rem, 2.5vw, 1.3rem)',
+              marginBottom: '40px',
+              lineHeight: 1.6,
+            }}>
+              The Ultimate ECE Symposium — Where Innovation Meets Excellence
+            </p>
+
+            {/* CTA Buttons */}
+            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => navigate({ to: '/register' })}
+                style={{
+                  background: 'linear-gradient(135deg, #FF6A00, #FF2200)',
+                  border: 'none', borderRadius: '8px',
+                  color: '#FFFFFF', fontFamily: '"Times New Roman", Times, serif',
+                  fontSize: '1.1rem', fontWeight: '700',
+                  padding: '14px 36px', cursor: 'pointer',
+                  boxShadow: '0 0 20px rgba(255,106,0,0.4)',
+                  transition: 'all 0.3s ease',
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  letterSpacing: '0.05em',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 35px rgba(255,106,0,0.7)';
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(255,106,0,0.4)';
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+                }}
+              >
+                Register Now <ChevronRight size={18} />
+              </button>
+              <button
+                onClick={() => navigate({ to: '/technical' })}
+                style={{
+                  background: 'transparent',
+                  border: '2px solid rgba(255,106,0,0.6)',
+                  borderRadius: '8px',
+                  color: '#FF8C00', fontFamily: '"Times New Roman", Times, serif',
+                  fontSize: '1.1rem', fontWeight: '600',
+                  padding: '14px 36px', cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  letterSpacing: '0.05em',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,106,0,0.1)';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#FF6A00';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,106,0,0.6)';
+                }}
+              >
+                Explore Events
+              </button>
+            </div>
           </div>
         </div>
       </section>

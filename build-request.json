@@ -1,121 +1,43 @@
 {
   "kind": "build_request",
-  "title": "Phoenix Intro: Replace Static Image with Video Animation + Synced Sound Effect",
-  "projectName": "VibECX-2K26",
-  "priority": "high",
+  "title": "Update Base Registration description in Fee Breakdown",
+  "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "In PhoenixIntro.tsx, remove the static phoenix bird image entirely. Replace it with an HTML5 <video> element that uses the file 'phoenix.mp4' (placed in frontend/public/assets/) as its source. The video must be centered on screen, autoplay, start muted, and display with a smooth CSS fade-in effect. Surround it with a fiery orange/red radial glow (box-shadow or drop-shadow filter) consistent with the existing orange/red phoenix theme.",
+      "text": "In the Fee Breakdown section of the Register page, update the Base Registration description line from '₹149 × 1 member' to two lines: '₹149 × 1 member' followed by 'Includes 1 Technical & 1 Non-Technical Event'. The second line must use the same font style, text color, and alignment as the existing description text, with consistent spacing. Do not change the registration amount, fee calculation logic, Additional Event section, layout, or any other styling.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-3"
         ],
         "quotes": [
-          "REMOVE static phoenix bird image completely.",
-          "Instead, use the provided PHOENIX VIDEO animation.",
-          "Phoenix video must appear centered on screen with fiery orange glow.",
-          "Video should play automatically when intro begins.",
-          "Use smooth fade-in effect for video."
+          "Update ONLY the Base Registration description line.",
+          "₹149 × 1 member  \nIncludes 1 Technical & 1 Non-Technical Event",
+          "Keep same font style. Keep same text color. Keep same alignment. Maintain spacing consistency."
         ]
       },
       "acceptanceCriteria": [
-        "No static phoenix image is rendered anywhere in the intro sequence.",
-        "A <video> element plays automatically when the intro screen mounts.",
-        "The video starts muted.",
-        "The video fades in smoothly (CSS opacity transition) from 0 to 1.",
-        "The video is centered horizontally and vertically on the screen.",
-        "A fiery orange/red glow effect is applied around the video."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Add an HTML5 <audio> element to PhoenixIntro.tsx that uses the file 'phoenix-sound.mp3' (placed in frontend/public/assets/) as its source. Configure it with loop=false, volume=0.5 (medium/cinematic level). When the video's 'onplay' event fires, unmute the video and call audio.play(). When the video's 'onended' event fires, immediately call audio.pause() and reset audio.currentTime to 0. The sound must not loop and must not continue playing after the intro finishes.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-3"
-        ],
-        "quotes": [
-          "Attach the provided phoenix flying sound effect to the video.",
-          "When phoenix starts flying upward → PLAY SOUND.",
-          "Sound volume medium (not loud, cinematic level).",
-          "When flying animation ends → IMMEDIATELY STOP SOUND.",
-          "Sound must NOT loop.",
-          "Sound must NOT continue after intro finishes.",
-          "video.onplay → start audio",
-          "video.onended → stop audio + navigate home"
-        ]
-      },
-      "acceptanceCriteria": [
-        "An <audio> element is present in the intro component referencing 'phoenix-sound.mp3'.",
-        "Audio plays when the video's play event fires.",
-        "Audio volume is set to 0.5.",
-        "Audio stops immediately when the video ends.",
-        "Audio does not loop.",
-        "Audio does not continue after the intro transitions to the Home page."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Synchronize the text animations in PhoenixIntro.tsx with the phoenix video playback. As the video plays: (1) The text 'Department of Electronics and Communication Engineering' animates upward in sync with the phoenix flight — use a CSS translateY transition triggered when the video begins playing. (2) After the department text rises, the big title 'VibECX-2K26' appears with a fade-in and scale-up effect. (3) Then the subtitle '2K26' appears below it. All text must remain in Times New Roman, clear and readable, with the existing orange/red neon glow styling.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-3"
-        ],
-        "quotes": [
-          "Department of Electronics and Communication Engineering moves upward along with phoenix flight.",
-          "Then BIG TITLE appears: VibECX-2K26",
-          "Then subtitle: 2K26",
-          "Times New Roman text must remain clear and readable."
-        ]
-      },
-      "acceptanceCriteria": [
-        "Department name text animates upward (translateY) when the video starts playing.",
-        "'VibECX-2K26' title appears after the department text rises, with a fade-in and/or scale effect.",
-        "'2K26' subtitle appears after the main title.",
-        "All text uses Times New Roman font.",
-        "Text is clearly readable against the video background with orange/red glow styling.",
-        "Text animations are visually synchronized with the video duration (approx. 7–8 seconds)."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "In the video's 'onended' event handler inside PhoenixIntro.tsx, after stopping the audio, trigger a smooth full-screen fade-out (opacity 0) transition on the entire intro container, then call the existing onComplete() callback to navigate to the Home page. There must be no loading screen between the intro and the Home page.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-3"
-        ],
-        "quotes": [
-          "After video animation ends → smoothly fade into Home page.",
-          "No loading screen.",
-          "video.onended → stop audio + navigate home"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When the video ends, the intro screen fades out smoothly (CSS opacity transition to 0).",
-        "After the fade-out, the app navigates directly to the Home page.",
-        "No loading screen or intermediate screen appears during the transition.",
-        "The audio is fully stopped before or during the fade-out."
+        "The Base Registration description shows '₹149 × 1 member' on the first line and 'Includes 1 Technical & 1 Non-Technical Event' on the second line.",
+        "The second line matches the font style, text color, and alignment of the existing description text.",
+        "Spacing between the two lines is visually consistent with surrounding content.",
+        "The registration amount (₹149) is unchanged.",
+        "Fee calculation logic is unchanged.",
+        "The Additional Event section is unchanged.",
+        "No layout or styling changes are made outside the description text."
       ]
     }
   ],
   "constraints": [
-    "All text in the intro must remain in Times New Roman font.",
-    "The fiery orange/red color theme must be preserved throughout the intro.",
-    "Audio must not loop and must not play outside the intro sequence.",
-    "Do not modify any immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Video and audio asset files (phoenix.mp4, phoenix-sound.mp3) must be placed in frontend/public/assets/ and referenced as static assets — do not route through the backend."
+    "Do not change the registration amount or fee calculation logic.",
+    "Do not modify the Additional Event section.",
+    "Do not change layout or styling beyond the description text update.",
+    "The new line must inherit the same font style, text color, and alignment as the existing description."
   ],
   "nonGoals": [
-    "Adding any new backend logic or data persistence for the intro.",
-    "Modifying the QR payment flow, registration form, or any other pages.",
-    "Adding a loading screen between intro and Home page.",
-    "Changing the Home page or any page other than PhoenixIntro.tsx.",
-    "Adding music controls or volume UI."
+    "Changing any fee amounts or pricing.",
+    "Modifying the Additional Event fee section.",
+    "Altering the overall layout, color scheme, or component structure of the Register page."
   ],
   "imageRequirements": {
     "required": [],
