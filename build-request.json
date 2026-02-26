@@ -1,0 +1,65 @@
+{
+  "kind": "build_request",
+  "title": "Total Amount Auto-Sync from Registration to Payment QR Section",
+  "projectName": "VibECX Registration",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "On the Register page, when the user clicks the 'Proceed to Payment' button, save the displayed total amount (numeric value, stripped of the ₹ symbol) to localStorage under the key 'vibecxAmount', then navigate to the Payment page. Use the existing totalAmount display element as the source value.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "When user clicks 'Proceed to Payment': localStorage.setItem('vibecxAmount', amount);",
+          "const amount = totalAmount.innerText.replace('₹','');"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking 'Proceed to Payment' writes the current total amount (without ₹) to localStorage key 'vibecxAmount'.",
+        "The value written matches exactly what is shown in the total amount display on the Registration page.",
+        "Navigation to the Payment page occurs after saving the value."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "On the Payment page, on load, read the 'vibecxAmount' value from localStorage and display it as '₹<amount>' in the QR amount display element. Also populate a hidden input field with the raw numeric amount. No fee recalculation must occur on the Payment page — only the stored value must be used.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "const savedAmount = localStorage.getItem('vibecxAmount');",
+          "document.getElementById('qrAmount').innerText = '₹' + savedAmount;",
+          "document.getElementById('paymentAmountInput').value = savedAmount;",
+          "Payment page must NOT calculate again. Only use value received from Registration page.",
+          "QR scan screen must always show stored total amount."
+        ]
+      },
+      "acceptanceCriteria": [
+        "On Payment page load, the QR section displays the amount as '₹<value>' where value matches what was saved by the Registration page.",
+        "A hidden input field holds the raw numeric amount from localStorage.",
+        "The Payment page performs no independent fee calculation.",
+        "If no amount is found in localStorage, the QR amount area is handled gracefully (e.g., shows a fallback or empty state).",
+        "The displayed QR amount is identical to the total shown on the Registration page before navigation."
+      ]
+    }
+  ],
+  "constraints": [
+    "The Payment page must not recalculate or derive the amount independently — it must only read from localStorage key 'vibecxAmount'.",
+    "Do not modify frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or any files under frontend/src/components/ui."
+  ],
+  "nonGoals": [
+    "Changing the fee calculation logic on the Registration page.",
+    "Persisting the amount to the backend.",
+    "Adding any new payment methods or QR code generation.",
+    "Modifying the screenshot upload or backend submission flow on the Payment page."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

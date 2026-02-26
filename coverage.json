@@ -1,0 +1,49 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-26T16:44:43.521Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "On the Register page, when the user clicks the 'Proceed to Payment' button, save the displayed total amount (numeric value, stripped of the ₹ symbol) to localStorage under the key 'vibecxAmount', then navigate to the Payment page. Use the existing totalAmount display element as the source value.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Register.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Register.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "On the Payment page, on load, read the 'vibecxAmount' value from localStorage and display it as '₹<amount>' in the QR amount display element. Also populate a hidden input field with the raw numeric amount. No fee recalculation must occur on the Payment page — only the stored value must be used.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Payment.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Payment.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/pages/Payment.tsx",
+    "frontend/src/pages/Register.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

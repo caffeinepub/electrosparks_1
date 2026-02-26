@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Registration + Payment flow web app (VibeCX). Registration page calculates total amount and passes it to Payment page via localStorage. Payment page displays the stored amount in QR section without recalculation.",
+  "architectural_notes": [
+    "Amount is passed from Registration to Payment page via localStorage key 'vibecxAmount'; Payment page must NOT recalculate.",
+    "QR payment section reads amount from localStorage on page load and displays it via #qrAmount span and #paymentAmountInput hidden input."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-on-the-register-page-when-the-user-clicks-the-proceed-to-payment-button-save-the-displayed-total-amount-numeric-value-stripped-of-the-symbol-to-localstorage-under-the-key-vibecxamount-then-navigate-to-the-payment-page-use-the-existing-totalamount-display-element-as-the-source-value",
+      "title": "On the Register page, when the user clicks the 'Proceed to Payment' button, save the displayed total amount (numeric value, stripped of the ₹ symbol) to localStorage under the key 'vibecxAmount', then navigate to the Payment page. Use the existing totalAmount display element as the source value.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-on-the-payment-page-on-load-read-the-vibecxamount-value-from-localstorage-and-display-it-as-amount-in-the-qr-amount-display-element-also-populate-a-hidden-input-field-with-the-raw-numeric-amount-no-fee-recalculation-must-occur-on-the-payment-page-only-the-stored-value-must-be-used",
+      "title": "On the Payment page, on load, read the 'vibecxAmount' value from localStorage and display it as '₹<amount>' in the QR amount display element. Also populate a hidden input field with the raw numeric amount. No fee recalculation must occur on the Payment page — only the stored value must be used.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Total amount auto-sync from Registration page to Payment page QR section via localStorage (no recalculation on payment page)",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "VibeCX",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
