@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-on-the-register-page-when-the-user-clicks-the-proceed-to-payment-button-save-the-displayed-total-amount-numeric-value-stripped-of-the-symbol-to-localstorage-under-the-key-vibecxamount-then-navigate-to-the-payment-page-use-the-existing-totalamount-display-element-as-the-source-value",
-      "featureTitle": "On the Register page, when the user clicks the 'Proceed to Payment' button, save the displayed total amount (numeric value, stripped of the ₹ symbol) to localStorage under the key 'vibecxAmount', then navigate to the Payment page. Use the existing totalAmount display element as the source value.",
+      "featureId": "feature-in-phoenixintro-tsx-remove-the-static-phoenix-bird-image-entirely-replace-it-with-an-html5-video-element-that-uses-the-file-phoenix-mp4-placed-in-frontend-public-assets-as-its-source-the-video-must-be-centered-on-screen-autoplay-start-muted-and-display-with-a-smooth-css-fade-in-effect-surround-it-with-a-fiery-orange-red-radial-glow-box-shadow-or-drop-shadow-filter-consistent-with-the-existing-orange-red-phoenix-theme",
+      "featureTitle": "In PhoenixIntro.tsx, remove the static phoenix bird image entirely. Replace it with an HTML5 <video> element that uses the file 'phoenix.mp4' (placed in frontend/public/assets/) as its source. The video must be centered on screen, autoplay, start muted, and display with a smooth CSS fade-in effect. Surround it with a fiery orange/red radial glow (box-shadow or drop-shadow filter) consistent with the existing orange/red phoenix theme.",
       "files": [
-        "frontend/src/pages/Register.tsx"
+        "frontend/src/components/PhoenixIntro.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,10 +22,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-on-the-payment-page-on-load-read-the-vibecxamount-value-from-localstorage-and-display-it-as-amount-in-the-qr-amount-display-element-also-populate-a-hidden-input-field-with-the-raw-numeric-amount-no-fee-recalculation-must-occur-on-the-payment-page-only-the-stored-value-must-be-used",
-      "featureTitle": "On the Payment page, on load, read the 'vibecxAmount' value from localStorage and display it as '₹<amount>' in the QR amount display element. Also populate a hidden input field with the raw numeric amount. No fee recalculation must occur on the Payment page — only the stored value must be used.",
+      "featureId": "feature-add-an-html5-audio-element-to-phoenixintro-tsx-that-uses-the-file-phoenix-sound-mp3-placed-in-frontend-public-assets-as-its-source-configure-it-with-loop-false-volume-0-5-medium-cinematic-level-when-the-video-s-onplay-event-fires-unmute-the-video-and-call-audio-play-when-the-video-s-onended-event-fires-immediately-call-audio-pause-and-reset-audio-currenttime-to-0-the-sound-must-not-loop-and-must-not-continue-playing-after-the-intro-finishes",
+      "featureTitle": "Add an HTML5 <audio> element to PhoenixIntro.tsx that uses the file 'phoenix-sound.mp3' (placed in frontend/public/assets/) as its source. Configure it with loop=false, volume=0.5 (medium/cinematic level). When the video's 'onplay' event fires, unmute the video and call audio.play(). When the video's 'onended' event fires, immediately call audio.pause() and reset audio.currentTime to 0. The sound must not loop and must not continue playing after the intro finishes.",
       "files": [
-        "frontend/src/pages/Payment.tsx"
+        "frontend/src/components/PhoenixIntro.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,6 +38,46 @@
       ],
       "testIds": [
         "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-synchronize-the-text-animations-in-phoenixintro-tsx-with-the-phoenix-video-playback-as-the-video-plays-1-the-text-department-of-electronics-and-communication-engineering-animates-upward-in-sync-with-the-phoenix-flight-use-a-css-translatey-transition-triggered-when-the-video-begins-playing-2-after-the-department-text-rises-the-big-title-vibecx-2k26-appears-with-a-fade-in-and-scale-up-effect-3-then-the-subtitle-2k26-appears-below-it-all-text-must-remain-in-times-new-roman-clear-and-readable-with-the-existing-orange-red-neon-glow-styling",
+      "featureTitle": "Synchronize the text animations in PhoenixIntro.tsx with the phoenix video playback. As the video plays: (1) The text 'Department of Electronics and Communication Engineering' animates upward in sync with the phoenix flight — use a CSS translateY transition triggered when the video begins playing. (2) After the department text rises, the big title 'VibECX-2K26' appears with a fade-in and scale-up effect. (3) Then the subtitle '2K26' appears below it. All text must remain in Times New Roman, clear and readable, with the existing orange/red neon glow styling.",
+      "files": [
+        "frontend/src/components/PhoenixIntro.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-in-the-video-s-onended-event-handler-inside-phoenixintro-tsx-after-stopping-the-audio-trigger-a-smooth-full-screen-fade-out-opacity-0-transition-on-the-entire-intro-container-then-call-the-existing-oncomplete-callback-to-navigate-to-the-home-page-there-must-be-no-loading-screen-between-the-intro-and-the-home-page",
+      "featureTitle": "In the video's 'onended' event handler inside PhoenixIntro.tsx, after stopping the audio, trigger a smooth full-screen fade-out (opacity 0) transition on the entire intro container, then call the existing onComplete() callback to navigate to the Home page. There must be no loading screen between the intro and the Home page.",
+      "files": [
+        "frontend/src/components/PhoenixIntro.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

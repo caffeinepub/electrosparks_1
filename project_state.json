@@ -1,27 +1,43 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Registration + Payment flow web app (VibeCX). Registration page calculates total amount and passes it to Payment page via localStorage. Payment page displays the stored amount in QR section without recalculation.",
+  "summary": "VibECX-2K26 event app for Department of Electronics and Communication Engineering, featuring a phoenix intro animation with video/sound, QR payment flow with registration amount sync, and home page navigation.",
   "architectural_notes": [
-    "Amount is passed from Registration to Payment page via localStorage key 'vibecxAmount'; Payment page must NOT recalculate.",
-    "QR payment section reads amount from localStorage on page load and displays it via #qrAmount span and #paymentAmountInput hidden input."
+    "Intro uses HTML5 <video> for phoenix animation and <audio> for sound; audio triggered via video.onplay and stopped via video.onended",
+    "Registration page amount syncs directly to QR payment screen with no recalculation"
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-on-the-register-page-when-the-user-clicks-the-proceed-to-payment-button-save-the-displayed-total-amount-numeric-value-stripped-of-the-symbol-to-localstorage-under-the-key-vibecxamount-then-navigate-to-the-payment-page-use-the-existing-totalamount-display-element-as-the-source-value",
-      "title": "On the Register page, when the user clicks the 'Proceed to Payment' button, save the displayed total amount (numeric value, stripped of the ₹ symbol) to localStorage under the key 'vibecxAmount', then navigate to the Payment page. Use the existing totalAmount display element as the source value.",
+      "id": "feature-in-phoenixintro-tsx-remove-the-static-phoenix-bird-image-entirely-replace-it-with-an-html5-video-element-that-uses-the-file-phoenix-mp4-placed-in-frontend-public-assets-as-its-source-the-video-must-be-centered-on-screen-autoplay-start-muted-and-display-with-a-smooth-css-fade-in-effect-surround-it-with-a-fiery-orange-red-radial-glow-box-shadow-or-drop-shadow-filter-consistent-with-the-existing-orange-red-phoenix-theme",
+      "title": "In PhoenixIntro.tsx, remove the static phoenix bird image entirely. Replace it with an HTML5 <video> element that uses the file 'phoenix.mp4' (placed in frontend/public/assets/) as its source. The video must be centered on screen, autoplay, start muted, and display with a smooth CSS fade-in effect. Surround it with a fiery orange/red radial glow (box-shadow or drop-shadow filter) consistent with the existing orange/red phoenix theme.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-on-the-payment-page-on-load-read-the-vibecxamount-value-from-localstorage-and-display-it-as-amount-in-the-qr-amount-display-element-also-populate-a-hidden-input-field-with-the-raw-numeric-amount-no-fee-recalculation-must-occur-on-the-payment-page-only-the-stored-value-must-be-used",
-      "title": "On the Payment page, on load, read the 'vibecxAmount' value from localStorage and display it as '₹<amount>' in the QR amount display element. Also populate a hidden input field with the raw numeric amount. No fee recalculation must occur on the Payment page — only the stored value must be used.",
+      "id": "feature-add-an-html5-audio-element-to-phoenixintro-tsx-that-uses-the-file-phoenix-sound-mp3-placed-in-frontend-public-assets-as-its-source-configure-it-with-loop-false-volume-0-5-medium-cinematic-level-when-the-video-s-onplay-event-fires-unmute-the-video-and-call-audio-play-when-the-video-s-onended-event-fires-immediately-call-audio-pause-and-reset-audio-currenttime-to-0-the-sound-must-not-loop-and-must-not-continue-playing-after-the-intro-finishes",
+      "title": "Add an HTML5 <audio> element to PhoenixIntro.tsx that uses the file 'phoenix-sound.mp3' (placed in frontend/public/assets/) as its source. Configure it with loop=false, volume=0.5 (medium/cinematic level). When the video's 'onplay' event fires, unmute the video and call audio.play(). When the video's 'onended' event fires, immediately call audio.pause() and reset audio.currentTime to 0. The sound must not loop and must not continue playing after the intro finishes.",
       "reqIds": [
         "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-synchronize-the-text-animations-in-phoenixintro-tsx-with-the-phoenix-video-playback-as-the-video-plays-1-the-text-department-of-electronics-and-communication-engineering-animates-upward-in-sync-with-the-phoenix-flight-use-a-css-translatey-transition-triggered-when-the-video-begins-playing-2-after-the-department-text-rises-the-big-title-vibecx-2k26-appears-with-a-fade-in-and-scale-up-effect-3-then-the-subtitle-2k26-appears-below-it-all-text-must-remain-in-times-new-roman-clear-and-readable-with-the-existing-orange-red-neon-glow-styling",
+      "title": "Synchronize the text animations in PhoenixIntro.tsx with the phoenix video playback. As the video plays: (1) The text 'Department of Electronics and Communication Engineering' animates upward in sync with the phoenix flight — use a CSS translateY transition triggered when the video begins playing. (2) After the department text rises, the big title 'VibECX-2K26' appears with a fade-in and scale-up effect. (3) Then the subtitle '2K26' appears below it. All text must remain in Times New Roman, clear and readable, with the existing orange/red neon glow styling.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-in-the-video-s-onended-event-handler-inside-phoenixintro-tsx-after-stopping-the-audio-trigger-a-smooth-full-screen-fade-out-opacity-0-transition-on-the-entire-intro-container-then-call-the-existing-oncomplete-callback-to-navigate-to-the-home-page-there-must-be-no-loading-screen-between-the-intro-and-the-home-page",
+      "title": "In the video's 'onended' event handler inside PhoenixIntro.tsx, after stopping the audio, trigger a smooth full-screen fade-out (opacity 0) transition on the entire intro container, then call the existing onComplete() callback to navigate to the Home page. There must be no loading screen between the intro and the Home page.",
+      "reqIds": [
+        "REQ-4"
       ],
       "version": 1
     }
@@ -29,13 +45,31 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Total amount auto-sync from Registration page to Payment page QR section via localStorage (no recalculation on payment page)",
+      "summary": "Replace static phoenix image with phoenix video animation on intro screen; autoplay with fade-in, fiery glow, centered layout",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Sync phoenix flying sound effect to video: play on flight start, stop on video end, medium volume, no loop",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Animate text (Department name, VibECX-2K26 title, 2K26 subtitle) in sync with phoenix video playback",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "After phoenix video ends, smoothly fade into Home page with no loading screen",
       "reqIds": [],
       "status": "pending"
     }
   ],
   "gameProjectType": "none",
-  "projectName": "VibeCX",
+  "projectName": "VibECX-2K26",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }
