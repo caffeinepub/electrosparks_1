@@ -1,55 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Apply warm beige marble global background with dark overlay across all pages",
+  "title": "Change global background color to royal beige (#DCCBB5)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Set the global body background color to a warm beige marble tone (#DCCBB5) across the entire application",
+      "summary": "Replace all black background color values in frontend/src/index.css with royal beige #DCCBB5 for the global body background",
       "acceptanceCriteria": [
-        "The body element has a background-color of #DCCBB5 or equivalent warm beige marble tone applied globally.",
-        "All pages (Home, Technical, Non-Technical, Register, Payment, Success, Contact, Admin, Dashboard) show the beige marble background.",
-        "No page retains the previous dark/black background at the body level."
+        "The body/html background color resolves to #DCCBB5 (or visually equivalent royal beige) on all pages: Home, Technical, Non-Technical, Register, Contact, and Admin Dashboard.",
+        "No black (#000, #000000, or equivalent) remains as the global body or root background.",
+        "Text colors, glow effects, neon styles, font families, button appearances, borders, layout structure, shadows, animations, section spacing, card styles, and all functionality remain unchanged.",
+        "The beige background is applied globally via CSS custom properties or the body/root selector in index.css, not per-page."
       ],
       "file_operations": [
         {
           "path": "frontend/src/index.css",
           "operation": "modify",
-          "description": "Add a body rule setting background-color to #DCCBB5 in the global stylesheet to apply the warm beige marble tone across all pages and routes."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Add a full-viewport fixed dark overlay element with background rgba(0,0,0,0.75) below all page content to maintain readability and premium look of neon elements",
-      "acceptanceCriteria": [
-        "A fixed full-viewport pseudo-element or overlay div with background rgba(0,0,0,0.75) is rendered above the body background but below all page content.",
-        "Orange neon glow effects and text remain fully visible and unobstructed.",
-        "No buttons, inputs, links, or interactive elements are blocked by the overlay.",
-        "The overlay covers 100vw × 100vh on all pages."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add a body::before pseudo-element with position:fixed, top:0, left:0, width:100vw, height:100vh, background:rgba(0,0,0,0.75), z-index:0, and pointer-events:none to create a dark overlay above the beige background but below all page content without blocking any interactions."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Ensure that all existing layout, spacing, font sizes, animations, neon highlights, circuit patterns, and functional components remain completely unchanged",
-      "acceptanceCriteria": [
-        "No changes are made to any page component files beyond global CSS.",
-        "All animations (PhoenixIntro, LoadingScreen, CountdownTimer, CircuitPattern) continue to function as before.",
-        "Section spacing, font sizes, button styles, and layout are identical to the previous version.",
-        "Neon orange glow effects remain visually intact."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Verify that all existing CSS rules, Tailwind utilities, custom properties, neon effects, and keyframe animations remain unchanged and intact after adding the body background and overlay styles."
+          "description": "Replace the black background color (#000 or equivalent dark OKLCH values) with royal beige #DCCBB5. Update the body background declaration and any CSS custom property (--background) that defines the global dark background. Preserve all other styling including text colors, neon glow effects (orange/cyan), font imports (Orbitron, Rajdhani, Exo 2), Tailwind directives, utility classes for neon borders/text/glow, and all layout/spacing/animation rules. Only modify background color values that currently render as black."
         }
       ]
     }

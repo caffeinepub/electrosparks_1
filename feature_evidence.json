@@ -2,8 +2,8 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-set-the-global-body-background-color-to-a-warm-beige-marble-tone-dccbb5-across-the-entire-application-by-updating-the-global-stylesheet-frontend-src-index-css-this-must-apply-to-all-pages-home-technical-events-non-technical-events-register-payment-success-contact-admin-and-dashboard",
-      "featureTitle": "Set the global body background color to a warm beige marble tone (#DCCBB5) across the entire application by updating the global stylesheet (frontend/src/index.css). This must apply to all pages: Home, Technical Events, Non-Technical Events, Register, Payment, Success, Contact, Admin, and Dashboard.",
+      "featureId": "feature-in-frontend-src-index-css-replace-all-black-background-color-values-e-g-000-000000-black-dark-oklch-background-variables-with-royal-beige-dccbb5-so-that-the-body-background-is-beige-across-the-entire-application-do-not-change-any-text-colors-glow-effects-fonts-button-styles-borders-layout-shadows-animations-spacing-or-card-styles",
+      "featureTitle": "In frontend/src/index.css, replace all black background color values (e.g., `#000`, `#000000`, `black`, dark OKLCH background variables) with royal beige `#DCCBB5` so that the body background is beige across the entire application. Do not change any text colors, glow effects, fonts, button styles, borders, layout, shadows, animations, spacing, or card styles.",
       "files": [
         "frontend/src/index.css"
       ],
@@ -18,46 +18,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-full-viewport-fixed-dark-overlay-element-with-background-rgba-0-0-0-0-75-and-z-index-below-all-page-content-z-index-0-or-equivalent-so-that-neon-orange-glowing-elements-remain-visually-premium-and-text-stays-readable-against-the-beige-background-this-overlay-must-not-block-any-interactions-or-sit-above-any-content-layer",
-      "featureTitle": "Add a full-viewport fixed dark overlay element with background rgba(0,0,0,0.75) and z-index below all page content (z-index: 0 or equivalent) so that neon/orange glowing elements remain visually premium and text stays readable against the beige background. This overlay must not block any interactions or sit above any content layer.",
-      "files": [
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-that-all-existing-layout-spacing-font-sizes-animations-neon-highlights-circuit-patterns-countdowntimer-navbar-footer-and-all-functional-components-remain-completely-unchanged-only-global-background-styling-is-modified",
-      "featureTitle": "Ensure that all existing layout, spacing, font sizes, animations, neon highlights, circuit patterns, CountdownTimer, Navbar, Footer, and all functional components remain completely unchanged. Only global background styling is modified.",
-      "files": [
-        "frontend/src/index.css"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
       ],
       "confidence": "high"
     }

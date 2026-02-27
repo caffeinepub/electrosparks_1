@@ -1,46 +1,23 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Multi-page website with Admin Dashboard, registration system, and themed UI. Currently applying global warm beige marble background (#DCCBB5) with dark overlay across all pages.",
+  "summary": "Multi-page website with pages: Home, Technical, Non-Technical, Register, Contact, and Admin Dashboard. Global background color being changed from black to royal beige (#DCCBB5).",
   "architectural_notes": [
-    "Global body background uses warm beige marble color (#DCCBB5) with dark overlay (rgba(0,0,0,0.75)) for text readability"
+    "Global body background color: #DCCBB5 (royal beige) applied across all pages (Home, Technical, Non-Technical, Register, Contact, Admin Dashboard)"
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-set-the-global-body-background-color-to-a-warm-beige-marble-tone-dccbb5-across-the-entire-application-by-updating-the-global-stylesheet-frontend-src-index-css-this-must-apply-to-all-pages-home-technical-events-non-technical-events-register-payment-success-contact-admin-and-dashboard",
-      "title": "Set the global body background color to a warm beige marble tone (#DCCBB5) across the entire application by updating the global stylesheet (frontend/src/index.css). This must apply to all pages: Home, Technical Events, Non-Technical Events, Register, Payment, Success, Contact, Admin, and Dashboard.",
+      "id": "feature-in-frontend-src-index-css-replace-all-black-background-color-values-e-g-000-000000-black-dark-oklch-background-variables-with-royal-beige-dccbb5-so-that-the-body-background-is-beige-across-the-entire-application-do-not-change-any-text-colors-glow-effects-fonts-button-styles-borders-layout-shadows-animations-spacing-or-card-styles",
+      "title": "In frontend/src/index.css, replace all black background color values (e.g., `#000`, `#000000`, `black`, dark OKLCH background variables) with royal beige `#DCCBB5` so that the body background is beige across the entire application. Do not change any text colors, glow effects, fonts, button styles, borders, layout, shadows, animations, spacing, or card styles.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
-    },
-    {
-      "id": "feature-add-a-full-viewport-fixed-dark-overlay-element-with-background-rgba-0-0-0-0-75-and-z-index-below-all-page-content-z-index-0-or-equivalent-so-that-neon-orange-glowing-elements-remain-visually-premium-and-text-stays-readable-against-the-beige-background-this-overlay-must-not-block-any-interactions-or-sit-above-any-content-layer",
-      "title": "Add a full-viewport fixed dark overlay element with background rgba(0,0,0,0.75) and z-index below all page content (z-index: 0 or equivalent) so that neon/orange glowing elements remain visually premium and text stays readable against the beige background. This overlay must not block any interactions or sit above any content layer.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-that-all-existing-layout-spacing-font-sizes-animations-neon-highlights-circuit-patterns-countdowntimer-navbar-footer-and-all-functional-components-remain-completely-unchanged-only-global-background-styling-is-modified",
-      "title": "Ensure that all existing layout, spacing, font sizes, animations, neon highlights, circuit patterns, CountdownTimer, Navbar, Footer, and all functional components remain completely unchanged. Only global background styling is modified.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
     }
   ],
-  "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Change global background to warm beige marble (#DCCBB5) with dark overlay (rgba(0,0,0,0.75)) across all pages",
-      "reqIds": [],
-      "status": "pending"
-    }
-  ],
+  "new_feature_requests": [],
   "gameProjectType": "none",
   "projectName": "VibECX-2K26",
   "clarification_mode": "instant",

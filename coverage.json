@@ -1,40 +1,18 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-27T05:51:41.203Z",
+  "generatedAt": "2026-02-27T06:04:00.925Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Set the global body background color to a warm beige marble tone (#DCCBB5) across the entire application by updating the global stylesheet (frontend/src/index.css). This must apply to all pages: Home, Technical Events, Non-Technical Events, Register, Payment, Success, Contact, Admin, and Dashboard.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
-          "frontend/src/index.css"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Add a full-viewport fixed dark overlay element with background rgba(0,0,0,0.75) and z-index below all page content (z-index: 0 or equivalent) so that neon/orange glowing elements remain visually premium and text stays readable against the beige background. This overlay must not block any interactions or sit above any content layer.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/index.css"
-        ],
-        "matchedFiles": [
-          "frontend/src/index.css"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Ensure that all existing layout, spacing, font sizes, animations, neon highlights, circuit patterns, CountdownTimer, Navbar, Footer, and all functional components remain completely unchanged. Only global background styling is modified.",
+        "summary": "In frontend/src/index.css, replace all black background color values (e.g., `#000`, `#000000`, `black`, dark OKLCH background variables) with royal beige `#DCCBB5` so that the body background is beige across the entire application. Do not change any text colors, glow effects, fonts, button styles, borders, layout, shadows, animations, spacing, or card styles.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/index.css"

@@ -1,81 +1,48 @@
 {
   "kind": "build_request",
-  "title": "Apply warm beige marble global background with dark overlay across all pages",
+  "title": "Change global background color to royal beige (#DCCBB5)",
   "projectName": "VibECX-2K26",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Set the global body background color to a warm beige marble tone (#DCCBB5) across the entire application by updating the global stylesheet (frontend/src/index.css). This must apply to all pages: Home, Technical Events, Non-Technical Events, Register, Payment, Success, Contact, Admin, and Dashboard.",
+      "text": "In frontend/src/index.css, replace all black background color values (e.g., `#000`, `#000000`, `black`, dark OKLCH background variables) with royal beige `#DCCBB5` so that the body background is beige across the entire application. Do not change any text colors, glow effects, fonts, button styles, borders, layout, shadows, animations, spacing, or card styles.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-last"
+          "msg-4"
         ],
         "quotes": [
-          "Change the entire website background on all pages (Home, Technical, Non-Technical, Register, Contact, Admin Dashboard) to a warm beige marble-style background color similar to #DCCBB5.",
-          "Apply this background globally using body styling so it affects the entire app."
+          "Change only the global website background color on all pages from black to a royal beige color similar to #DCCBB5.",
+          "Apply this color as the main body background across the entire application.",
+          "Only replace the black background with the royal beige color. Keep everything else exactly the same."
         ]
       },
       "acceptanceCriteria": [
-        "The body element has a background-color of #DCCBB5 or equivalent warm beige marble tone applied globally.",
-        "All pages (Home, Technical, Non-Technical, Register, Payment, Success, Contact, Admin, Dashboard) show the beige marble background.",
-        "No page retains the previous dark/black background at the body level."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Add a full-viewport fixed dark overlay element with background rgba(0,0,0,0.75) and z-index below all page content (z-index: 0 or equivalent) so that neon/orange glowing elements remain visually premium and text stays readable against the beige background. This overlay must not block any interactions or sit above any content layer.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "Ensure text readability by adding a very subtle dark overlay (rgba(0,0,0,0.75)) above the background so the glowing orange elements still look premium."
-        ]
-      },
-      "acceptanceCriteria": [
-        "A fixed full-viewport pseudo-element or overlay div with background rgba(0,0,0,0.75) is rendered above the body background but below all page content.",
-        "Orange neon glow effects and text remain fully visible and unobstructed.",
-        "No buttons, inputs, links, or interactive elements are blocked by the overlay.",
-        "The overlay covers 100vw × 100vh on all pages."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Ensure that all existing layout, spacing, font sizes, animations, neon highlights, circuit patterns, CountdownTimer, Navbar, Footer, and all functional components remain completely unchanged. Only global background styling is modified.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-last"
-        ],
-        "quotes": [
-          "Keep all existing layout, content, animations, neon highlights, and design unchanged.",
-          "Do not modify any section spacing, font sizes, buttons, or functionality.",
-          "Only change the global background styling."
-        ]
-      },
-      "acceptanceCriteria": [
-        "No changes are made to any page component files beyond global CSS.",
-        "All animations (PhoenixIntro, LoadingScreen, CountdownTimer, CircuitPattern) continue to function as before.",
-        "Section spacing, font sizes, button styles, and layout are identical to the previous version.",
-        "Neon orange glow effects remain visually intact."
+        "The body/html background color resolves to #DCCBB5 (or visually equivalent royal beige) on all pages: Home, Technical, Non-Technical, Register, Contact, and Admin Dashboard.",
+        "No black (#000, #000000, or equivalent) remains as the global body or root background.",
+        "Text colors, glow effects, neon styles, font families, button appearances, borders, layout structure, shadows, animations, section spacing, card styles, and all functionality remain unchanged.",
+        "The beige background is applied globally via CSS custom properties or the body/root selector in index.css, not per-page."
       ]
     }
   ],
   "constraints": [
-    "Do not modify any page component files (Home.tsx, TechnicalEvents.tsx, NonTechnicalEvents.tsx, Register.tsx, Contact.tsx, Admin.tsx, Dashboard.tsx, etc.).",
-    "Do not alter section spacing, font sizes, button styles, or any functional logic.",
-    "The dark overlay must not intercept pointer events or block any interactive elements.",
-    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui/."
+    "Do not modify text colors.",
+    "Do not modify glow or neon effects.",
+    "Do not modify fonts or typography.",
+    "Do not modify button styles.",
+    "Do not modify borders.",
+    "Do not modify layout or spacing.",
+    "Do not modify shadows or animations.",
+    "Do not modify card styles.",
+    "Do not modify any functionality or logic.",
+    "Do not edit any files under frontend/src/hooks/ or frontend/src/components/ui (immutable paths)."
   ],
   "nonGoals": [
-    "Changing typography, font sizes, or layout structure.",
-    "Modifying neon glow colors or animation behavior.",
-    "Updating backend logic or data models.",
-    "Deleting or modifying registration records.",
-    "Changing any page-level component structure."
+    "Changing any per-component or per-section background colors beyond the global body/root background.",
+    "Redesigning or restyling any UI elements other than the global background.",
+    "Modifying backend code.",
+    "Changing dark overlay or circuit pattern components."
   ],
   "imageRequirements": {
     "required": [],
