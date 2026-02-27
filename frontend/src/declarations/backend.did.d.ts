@@ -21,10 +21,16 @@ export interface Registration {
   'fullName' : string,
   'email' : string,
   'totalAmount' : bigint,
+  'timestamp' : bigint,
   'paymentScreenshotFileName' : string,
   'phone' : string,
   'department' : string,
   'eventType' : EventType,
+}
+export interface Stats {
+  'totalMembers' : bigint,
+  'totalRevenue' : bigint,
+  'totalRegistrations' : bigint,
 }
 export interface UserProfile { 'name' : string }
 export type UserRole = { 'admin' : null } |
@@ -62,6 +68,8 @@ export interface _SERVICE {
   'getAllRegistrations' : ActorMethod<[], Array<Registration>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getRegistration' : ActorMethod<[bigint], [] | [Registration]>,
+  'getStats' : ActorMethod<[], Stats>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,

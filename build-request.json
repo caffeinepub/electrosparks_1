@@ -1,43 +1,171 @@
 {
   "kind": "build_request",
-  "title": "Update Base Registration description in Fee Breakdown",
-  "priority": "normal",
+  "title": "Secure Admin Panel System with Full Registration Backend Persistence",
+  "projectName": "VibECX-2K26",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "In the Fee Breakdown section of the Register page, update the Base Registration description line from '₹149 × 1 member' to two lines: '₹149 × 1 member' followed by 'Includes 1 Technical & 1 Non-Technical Event'. The second line must use the same font style, text color, and alignment as the existing description text, with consistent spacing. Do not change the registration amount, fee calculation logic, Additional Event section, layout, or any other styling.",
-      "target": "frontend",
+      "text": "Update the backend actor to store a complete Registration record containing: Full Name, College, Department, Year of Study, Email, Phone Number, Selected Event Type, Number of Members, Total Amount, Payment Screenshot (as Blob), and Timestamp. All records must persist in stable storage so no data is lost across canister upgrades or page refreshes.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-3"
+          "msg-1"
         ],
         "quotes": [
-          "Update ONLY the Base Registration description line.",
-          "₹149 × 1 member  \nIncludes 1 Technical & 1 Non-Technical Event",
-          "Keep same font style. Keep same text color. Keep same alignment. Maintain spacing consistency."
+          "Save these fields: Full Name, College, Department, Year of Study, Email, Phone Number, Selected Event Type, Number of Members, Total Amount, Payment Screenshot (uploaded file), Timestamp",
+          "Data must persist in backend storage."
         ]
       },
       "acceptanceCriteria": [
-        "The Base Registration description shows '₹149 × 1 member' on the first line and 'Includes 1 Technical & 1 Non-Technical Event' on the second line.",
-        "The second line matches the font style, text color, and alignment of the existing description text.",
-        "Spacing between the two lines is visually consistent with surrounding content.",
-        "The registration amount (₹149) is unchanged.",
-        "Fee calculation logic is unchanged.",
-        "The Additional Event section is unchanged.",
-        "No layout or styling changes are made outside the description text."
+        "All specified fields are present in the Registration type in main.mo.",
+        "Registration records survive canister upgrades (stored in stable var).",
+        "Payment screenshot blob is stored alongside the registration record."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update the registration submission flow so that the FINAL SUBMIT action on the Payment page first saves all registration data (including the uploaded payment screenshot) to the backend. Only display the 'Registration Successful' success page if the backend save returns a success result. If the backend call fails or returns an error, do NOT navigate to the success page — instead show an inline error message on the Payment page.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Only after successful save → show 'Registration Successful'.",
+          "If save fails → do NOT show success message.",
+          "Registration must NOT complete unless backend save is successful."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Clicking FINAL SUBMIT calls the backend submitRegistration mutation before any navigation.",
+        "On success response from backend, user is routed to /success page.",
+        "On error response from backend, user remains on Payment page and sees an error message.",
+        "The success page is never reached without a confirmed backend save."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the /admin route is hidden from the Navbar and not linked anywhere in the public-facing UI. The route must exist at /admin but must not appear in the navigation menu.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Create hidden route: /admin",
+          "Do NOT show in navbar."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The Navbar component contains no link or reference to /admin.",
+        "Navigating directly to /admin loads the admin login screen.",
+        "No other public page links to /admin."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Implement an admin login screen at /admin that requires entry of Username and Password before granting access to the dashboard. Hard-code the valid credentials as Username: VibECX-2K26 and Password: VibECX@2K26 (validated on the backend via the existing adminLogin endpoint). If credentials are incorrect, display the message 'Invalid Username or Password'. The dashboard content must not render until login is successful.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Add login screen before accessing dashboard.",
+          "Set credentials: Username: VibECX-2K26 Password: VibECX@2K26",
+          "If incorrect: Show 'Invalid Username or Password'.",
+          "Dashboard must NOT load without successful login."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Visiting /admin shows a login form with username and password fields.",
+        "Submitting correct credentials (VibECX-2K26 / VibECX@2K26) grants access to the admin dashboard.",
+        "Submitting incorrect credentials shows 'Invalid Username or Password' and does not load the dashboard.",
+        "The dashboard component is not mounted or rendered until a valid session token is obtained.",
+        "Refreshing the page while logged in (session token in memory) keeps the user on the dashboard without re-login prompting (or gracefully redirects to login if session is lost)."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Build or update the backend to expose admin-only query endpoints (protected by session token) that return: (1) total count of registrations, (2) total participants count (sum of Number of Members across all records), (3) total revenue (sum of Total Amount across all records), and (4) the full list of all Registration records sorted by timestamp descending (latest first).",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "After login show: 1. Total Registrations Count 2. Total Participants Count (sum of members field) 3. Total Revenue (sum of total amount)",
+          "Sort by latest first.",
+          "Admin panel must always show ALL saved records.",
+          "No entry should be skipped."
+        ]
+      },
+      "acceptanceCriteria": [
+        "getAdminStats query returns totalRegistrations, totalParticipants, and totalRevenue.",
+        "getAllRegistrations query returns all records sorted by timestamp descending.",
+        "Both endpoints reject calls without a valid session token.",
+        "No records are omitted from the response."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Build or update the AdminDashboard component to display three stat cards at the top (Total Registrations, Total Participants, Total Revenue) and a table below listing all registrations with columns: Name, College, Department, Phone, Event Type, Members, Amount, Timestamp, and Payment Screenshot. The Payment Screenshot cell must show a clickable thumbnail that opens the full image in a preview (lightbox or new tab). The table must be sorted latest-first and reflect any new registrations immediately after page load/refresh.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Display table with: Name, College, Department, Phone, Event Type, Members, Amount, Timestamp, Payment Screenshot (preview clickable)",
+          "Sort by latest first.",
+          "Admin page must reflect new registrations instantly after submission."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Three stat cards show correct aggregated values fetched from the backend.",
+        "Registration table renders all records with the specified columns.",
+        "Payment Screenshot column shows a clickable thumbnail; clicking opens the image for preview.",
+        "Table is sorted by timestamp with the most recent entry at the top.",
+        "Data is re-fetched on every dashboard load so new registrations appear without a hard refresh."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Style the admin login screen and dashboard using the same dark theme as the rest of the site (dark backgrounds, orange-gold accents). The layout must be clean, professional, minimally animated, and fully responsive on mobile and desktop.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Same dark theme",
+          "Clean professional admin layout",
+          "Minimal animation",
+          "Fully responsive"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Admin login and dashboard pages share the dark background and orange/gold accent palette used elsewhere in the app.",
+        "Layout adapts correctly on mobile viewports (table scrolls horizontally on small screens).",
+        "No heavy animations; subtle transitions only.",
+        "Stat cards, table, and login form are clearly readable and well-spaced."
       ]
     }
   ],
   "constraints": [
-    "Do not change the registration amount or fee calculation logic.",
-    "Do not modify the Additional Event section.",
-    "Do not change layout or styling beyond the description text update.",
-    "The new line must inherit the same font style, text color, and alignment as the existing description."
+    "Admin credentials (VibECX-2K26 / VibECX@2K26) must be validated on the backend, not purely client-side.",
+    "Payment screenshot must be stored as a Blob in the backend stable storage — do not store only a URL.",
+    "The /admin route must never appear in the Navbar or any public navigation element.",
+    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
+    "All registration data must be stored in stable variables so it survives canister upgrades."
   ],
   "nonGoals": [
-    "Changing any fee amounts or pricing.",
-    "Modifying the Additional Event fee section.",
-    "Altering the overall layout, color scheme, or component structure of the Register page."
+    "Third-party authentication or OAuth — admin login uses hardcoded credentials only.",
+    "Public-facing registration data exposure via any unauthenticated API.",
+    "Email or SMS notifications on registration.",
+    "CSV export changes (existing export functionality should remain as-is unless broken).",
+    "Any changes to the Internet Identity integration."
   ],
   "imageRequirements": {
     "required": [],

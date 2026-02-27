@@ -1,34 +1,108 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-26T18:37:13.620Z",
+  "generatedAt": "2026-02-27T01:03:13.316Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 7,
+    "implemented": 4,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "In the Fee Breakdown section of the Register page, update the Base Registration description line from '₹149 × 1 member' to two lines: '₹149 × 1 member' followed by 'Includes 1 Technical & 1 Non-Technical Event'. The second line must use the same font style, text color, and alignment as the existing description text, with consistent spacing. Do not change the registration amount, fee calculation logic, Additional Event section, layout, or any other styling.",
+        "summary": "Update the backend actor to store a complete Registration record containing: Full Name, College, Department, Year of Study, Email, Phone Number, Selected Event Type, Number of Members, Total Amount, Payment Screenshot (as Blob), and Timestamp. All records must persist in stable storage so no data is lost across canister upgrades or page refreshes.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Update the registration submission flow so that the FINAL SUBMIT action on the Payment page first saves all registration data (including the uploaded payment screenshot) to the backend. Only display the 'Registration Successful' success page if the backend save returns a success result. If the backend call fails or returns an error, do NOT navigate to the success page — instead show an inline error message on the Payment page.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/Register.tsx"
+          "frontend/src/pages/Payment.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/contexts/RegistrationContext.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/Register.tsx"
+          "frontend/src/pages/Payment.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the /admin route is hidden from the Navbar and not linked anywhere in the public-facing UI. The route must exist at /admin but must not appear in the navigation menu.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/Navbar.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Implement an admin login screen at /admin that requires entry of Username and Password before granting access to the dashboard. Hard-code the valid credentials as Username: VibECX-2K26 and Password: VibECX@2K26 (validated on the backend via the existing adminLogin endpoint). If credentials are incorrect, display the message 'Invalid Username or Password'. The dashboard content must not render until login is successful.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Admin.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Admin.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Build or update the backend to expose admin-only query endpoints (protected by session token) that return: (1) total count of registrations, (2) total participants count (sum of Number of Members across all records), (3) total revenue (sum of Total Amount across all records), and (4) the full list of all Registration records sorted by timestamp descending (latest first).",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Build or update the AdminDashboard component to display three stat cards at the top (Total Registrations, Total Participants, Total Revenue) and a table below listing all registrations with columns: Name, College, Department, Phone, Event Type, Members, Amount, Timestamp, and Payment Screenshot. The Payment Screenshot cell must show a clickable thumbnail that opens the full image in a preview (lightbox or new tab). The table must be sorted latest-first and reflect any new registrations immediately after page load/refresh.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/AdminDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/AdminDashboard.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Style the admin login screen and dashboard using the same dark theme as the rest of the site (dark backgrounds, orange-gold accents). The layout must be clean, professional, minimally animated, and fully responsive on mobile and desktop.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Admin.tsx",
+          "frontend/src/components/AdminDashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Admin.tsx",
+          "frontend/src/components/AdminDashboard.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/pages/Register.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/AdminDashboard.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/Admin.tsx",
+    "frontend/src/pages/Payment.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

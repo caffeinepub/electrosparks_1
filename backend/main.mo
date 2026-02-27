@@ -1,11 +1,20 @@
 import Map "mo:core/Map";
+import Iter "mo:core/Iter";
 import Nat "mo:core/Nat";
+import Text "mo:core/Text";
+import Int "mo:core/Int";
+import List "mo:core/List";
+import Array "mo:core/Array";
+import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
-import AccessControl "authorization/access-control";
-import MixinAuthorization "authorization/MixinAuthorization";
+import Migration "migration";
 import MixinStorage "blob-storage/Mixin";
+import MixinAuthorization "authorization/MixinAuthorization";
+import AccessControl "authorization/access-control";
 
+// Use migration component for continuous data persistence
+(with migration = Migration.run)
 actor {
   // Mixin component state
   let accessControlState = AccessControl.initState();
@@ -13,7 +22,7 @@ actor {
   include MixinAuthorization(accessControlState);
   include MixinStorage();
 
-  type UserProfile = {
+  public type UserProfile = {
     name : Text;
   };
 
@@ -58,10 +67,19 @@ actor {
     numberOfMembers : Nat;
     totalAmount : Nat;
     paymentScreenshotFileName : Text;
+    timestamp : Int;
   };
 
-  let registrations = Map.empty<Nat, Registration>();
-  var nextId = 0;
+  type RegistrationState = {
+    entries : Map.Map<Nat, Registration>;
+    nextId : Nat;
+  };
+
+  // Core state containing registration data
+  var state : RegistrationState = {
+    entries = Map.empty<Nat, Registration>();
+    nextId = 0;
+  };
 
   // Open to anyone (including guests/anonymous) — public registration form
   public shared ({ caller }) func submitRegistration(
@@ -76,7 +94,7 @@ actor {
     totalAmount : Nat,
     paymentScreenshotFileName : Text,
   ) : async Nat {
-    let id = nextId;
+    let id = state.nextId;
     let registration : Registration = {
       id;
       fullName;
@@ -89,17 +107,59 @@ actor {
       numberOfMembers;
       totalAmount;
       paymentScreenshotFileName;
+      timestamp = Time.now();
     };
-    registrations.add(id, registration);
-    nextId += 1;
+    state.entries.add(id, registration);
+    state := { state with nextId = id + 1 };
     id;
   };
 
-  // Admin-only: exposes all participant personal data
+  // Admin-only queries for aggregate stats
+  type Stats = {
+    totalRegistrations : Nat;
+    totalMembers : Nat;
+    totalRevenue : Nat;
+  };
+
+  public query ({ caller }) func getStats() : async Stats {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can view stats");
+    };
+    let allEntries = state.entries.values().toArray();
+    let totalRegistrations = allEntries.size();
+
+    var totalMembers = 0;
+    var totalRevenue = 0;
+    for (reg in allEntries.values()) {
+      totalMembers += reg.numberOfMembers;
+      totalRevenue += reg.totalAmount;
+    };
+
+    {
+      totalRegistrations;
+      totalMembers;
+      totalRevenue;
+    };
+  };
+
+  // Admin-only query to fetch all registrations sorted by timestamp with most recent first
   public query ({ caller }) func getAllRegistrations() : async [Registration] {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
       Runtime.trap("Unauthorized: Only admins can view all registrations");
     };
-    registrations.values().toArray();
+    let entries = state.entries.values().toArray();
+    entries.sort(
+      func(a, b) {
+        Int.compare(b.timestamp, a.timestamp);
+      }
+    );
+  };
+
+  // Admin-only query to fetch single registration by id
+  public query ({ caller }) func getRegistration(id : Nat) : async ?Registration {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can view registration details");
+    };
+    state.entries.get(id);
   };
 };

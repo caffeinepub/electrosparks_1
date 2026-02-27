@@ -1,25 +1,116 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Update Base Registration description in Fee Breakdown",
+  "title": "Secure Admin Panel System with Full Registration Backend Persistence",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Update the Base Registration description in the Fee Breakdown section to show '₹149 × 1 member' on the first line and 'Includes 1 Technical & 1 Non-Technical Event' on the second line, matching existing font style, text color, and alignment",
+      "id": "REQ-2",
+      "summary": "Update registration submission flow to save all data (including payment screenshot) to backend before showing success page, with error handling on Payment page",
       "acceptanceCriteria": [
-        "The Base Registration description shows '₹149 × 1 member' on the first line and 'Includes 1 Technical & 1 Non-Technical Event' on the second line.",
-        "The second line matches the font style, text color, and alignment of the existing description text.",
-        "Spacing between the two lines is visually consistent with surrounding content.",
-        "The registration amount (₹149) is unchanged.",
-        "Fee calculation logic is unchanged.",
-        "The Additional Event section is unchanged.",
-        "No layout or styling changes are made outside the description text."
+        "Clicking FINAL SUBMIT calls the backend submitRegistration mutation before any navigation.",
+        "On success response from backend, user is routed to /success page.",
+        "On error response from backend, user remains on Payment page and sees an error message.",
+        "The success page is never reached without a confirmed backend save."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Register.tsx",
+          "path": "frontend/src/pages/Payment.tsx",
           "operation": "modify",
-          "description": "Locate the Fee Breakdown section where the Base Registration description currently displays '₹149 × 1 member'. Update this text to render as two lines: the first line showing '₹149 × 1 member' and the second line showing 'Includes 1 Technical & 1 Non-Technical Event'. Ensure the second line inherits the same text styling (font family, size, weight, color) and alignment as the first line. Maintain consistent vertical spacing between the lines. Do not modify the registration amount (₹149), fee calculation logic, Additional Event section, or any other layout or styling elements."
+          "description": "Update the final submit handler to call the backend submitRegistration mutation with all registration data (full name, college, department, year, email, phone, event type, number of members, total amount, and payment screenshot filename). Use the blob-storage component to upload the payment screenshot file and obtain the filename/reference. Wire the mutation to only navigate to /success on successful backend response. On error, display an inline error message on the Payment page without navigation. Verify the blob-storage component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Update or add the submitRegistration mutation hook to accept all required registration fields including the payment screenshot reference. Ensure the mutation returns proper success/error states that can be consumed by the Payment page component for conditional navigation and error display."
+        },
+        {
+          "path": "frontend/src/contexts/RegistrationContext.tsx",
+          "operation": "modify",
+          "description": "Extend the registration context to store the payment screenshot blob reference alongside other form data, ensuring it's available when the final submit occurs on the Payment page."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Hide /admin route from Navbar and all public-facing navigation",
+      "acceptanceCriteria": [
+        "The Navbar component contains no link or reference to /admin.",
+        "Navigating directly to /admin loads the admin login screen.",
+        "No other public page links to /admin."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Navbar.tsx",
+          "operation": "modify",
+          "description": "Remove any existing link to /admin from the navigation menu. Ensure the /admin route is not listed in the desktop nav links array or the mobile hamburger menu. The route will remain accessible via direct URL navigation but must not appear in any navigation UI."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Implement admin login screen at /admin with hardcoded credentials (VibECX-2K26 / VibECX@2K26) validated via backend, preventing dashboard access until successful login",
+      "acceptanceCriteria": [
+        "Visiting /admin shows a login form with username and password fields.",
+        "Submitting correct credentials (VibECX-2K26 / VibECX@2K26) grants access to the admin dashboard.",
+        "Submitting incorrect credentials shows 'Invalid Username or Password' and does not load the dashboard.",
+        "The dashboard component is not mounted or rendered until a valid session token is obtained.",
+        "Refreshing the page while logged in (session token in memory) keeps the user on the dashboard without re-login prompting (or gracefully redirects to login if session is lost)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Admin.tsx",
+          "operation": "modify",
+          "description": "Replace or update the existing admin login implementation to use the authorization component for session management. Update the login form to submit credentials (VibECX-2K26 / VibECX@2K26) to the backend adminLogin capability. On successful authentication, store the session token in component state. On failure, display 'Invalid Username or Password'. Conditionally render the AdminDashboard component only when a valid session token exists. Handle page refresh by checking for existing session state and re-prompting login if necessary. Verify the authorization component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure the adminLogin mutation is correctly wired to the backend adminLogin capability and returns a session token on success or an error on failure. Add any necessary session token management hooks if not already present."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Build or update AdminDashboard to display stat cards (Total Registrations, Total Participants, Total Revenue) and a sortable registration table with clickable payment screenshot thumbnails",
+      "acceptanceCriteria": [
+        "Three stat cards show correct aggregated values fetched from the backend.",
+        "Registration table renders all records with the specified columns.",
+        "Payment Screenshot column shows a clickable thumbnail; clicking opens the image for preview.",
+        "Table is sorted by timestamp with the most recent entry at the top.",
+        "Data is re-fetched on every dashboard load so new registrations appear without a hard refresh."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AdminDashboard.tsx",
+          "operation": "modify",
+          "description": "Update the AdminDashboard to fetch stats from the backend getStats capability and display three stat cards at the top: Total Registrations, Total Participants (sum of numberOfMembers), and Total Revenue (sum of totalAmount). Update the registrations table to include all required columns: Name, College, Department, Phone, Event Type, Members, Amount, Timestamp, and Payment Screenshot. For the Payment Screenshot column, render a clickable thumbnail using the blob-storage component's getDirectURL() method to display the image. Clicking the thumbnail should open a lightbox or open the image in a new tab. Ensure the table is sorted by timestamp descending (latest first). Configure the query to refetch on mount so new registrations appear immediately. Verify the blob-storage component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add or update hooks for fetching admin stats (getStats) and all registrations (getAllRegistrations). Ensure both queries are protected by session token and refetch on every mount to reflect new data immediately."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Style admin login and dashboard with dark theme, orange-gold accents, clean professional layout, minimal animation, and full responsiveness",
+      "acceptanceCriteria": [
+        "Admin login and dashboard pages share the dark background and orange/gold accent palette used elsewhere in the app.",
+        "Layout adapts correctly on mobile viewports (table scrolls horizontally on small screens).",
+        "No heavy animations; subtle transitions only.",
+        "Stat cards, table, and login form are clearly readable and well-spaced."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Admin.tsx",
+          "operation": "modify",
+          "description": "Apply the existing dark theme color tokens (from frontend/src/index.css and tailwind.config.js) to the admin login form. Use the orange/gold accent colors for buttons, focus states, and highlights. Ensure the layout is clean, professional, and responsive with minimal animations (subtle transitions only). Test the form on both mobile and desktop viewports."
+        },
+        {
+          "path": "frontend/src/components/AdminDashboard.tsx",
+          "operation": "modify",
+          "description": "Apply the dark theme with orange/gold accents to the stat cards and registration table. Ensure the table scrolls horizontally on small screens using overflow-x-auto or similar responsive technique. Use subtle transitions for hover states. Ensure stat cards are well-spaced, clearly readable, and adapt to mobile viewports. Keep animations minimal and professional."
         }
       ]
     }

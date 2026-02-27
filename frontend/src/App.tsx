@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RegistrationProvider } from './contexts/RegistrationContext';
@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import Payment from './pages/Payment';
 import Success from './pages/Success';
 import Contact from './pages/Contact';
+import Admin from './pages/Admin';
 
 const queryClient = new QueryClient();
 
@@ -27,7 +28,18 @@ function Layout() {
   );
 }
 
+// Admin layout — no Navbar/Footer
+function AdminLayout() {
+  return (
+    <div className="min-h-screen bg-black">
+      <Outlet />
+    </div>
+  );
+}
+
 const rootRoute = createRootRoute({ component: Layout });
+const adminRootRoute = createRootRoute({ component: AdminLayout });
+
 const homeRoute = createRoute({ getParentRoute: () => rootRoute, path: '/', component: Home });
 const technicalRoute = createRoute({ getParentRoute: () => rootRoute, path: '/technical', component: TechnicalEvents });
 const nonTechnicalRoute = createRoute({ getParentRoute: () => rootRoute, path: '/non-technical', component: NonTechnicalEvents });
@@ -35,6 +47,7 @@ const registerRoute = createRoute({ getParentRoute: () => rootRoute, path: '/reg
 const paymentRoute = createRoute({ getParentRoute: () => rootRoute, path: '/payment', component: Payment });
 const successRoute = createRoute({ getParentRoute: () => rootRoute, path: '/success', component: Success });
 const contactRoute = createRoute({ getParentRoute: () => rootRoute, path: '/contact', component: Contact });
+const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin', component: Admin });
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
@@ -44,6 +57,7 @@ const routeTree = rootRoute.addChildren([
   paymentRoute,
   successRoute,
   contactRoute,
+  adminRoute,
 ]);
 
 const router = createRouter({ routeTree });

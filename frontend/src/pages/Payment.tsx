@@ -3,17 +3,16 @@ import { useNavigate } from '@tanstack/react-router';
 import { useRegistration } from '../contexts/RegistrationContext';
 import CircuitPattern from '../components/CircuitPattern';
 import { Upload, CheckCircle, Loader2, AlertCircle } from 'lucide-react';
-import { useActor } from '../hooks/useActor';
+import { useSubmitRegistration } from '../hooks/useQueries';
 import { EventType } from '../backend';
 
 export default function Payment() {
   const navigate = useNavigate();
   const { registration, clearRegistration } = useRegistration();
-  const { actor } = useActor();
+  const submitRegistration = useSubmitRegistration();
 
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   // Amount loaded from localStorage (set by Register page on "Proceed to Payment")
@@ -66,33 +65,34 @@ export default function Payment() {
   };
 
   const handleSubmit = async () => {
-    if (!screenshot || !registration || !actor) return;
-    setSubmitting(true);
+    if (!screenshot || !registration) return;
     setError('');
+
     try {
-      await actor.submitRegistration(
-        registration.name,
-        registration.college,
-        registration.department,
-        BigInt(parseInt(registration.year)),
-        registration.email,
-        registration.phone,
-        mapEventType(registration.eventType),
-        BigInt(registration.numberOfMembers),
-        BigInt(registration.totalAmount),
-        screenshot.name,
-      );
-      // Clear the localStorage amount after successful submission
+      await submitRegistration.mutateAsync({
+        fullName: registration.name,
+        collegeName: registration.college,
+        department: registration.department,
+        year: parseInt(registration.year),
+        email: registration.email,
+        phone: registration.phone,
+        eventType: mapEventType(registration.eventType),
+        numberOfMembers: registration.numberOfMembers,
+        totalAmount: registration.totalAmount,
+        paymentScreenshotFileName: screenshot.name,
+      });
+
+      // Only navigate to success AFTER confirmed backend save
       localStorage.removeItem('vibecxAmount');
       clearRegistration();
       navigate({ to: '/success' });
     } catch (err: unknown) {
       console.error(err);
-      setError('Submission failed. Please try again.');
-    } finally {
-      setSubmitting(false);
+      setError('Registration submission failed. Please try again.');
     }
   };
+
+  const isSubmitting = submitRegistration.isPending;
 
   return (
     <div style={{ background: '#000000', minHeight: '100vh', fontFamily: '"Times New Roman", Times, serif', padding: '60px 24px' }}>
@@ -137,7 +137,13 @@ export default function Payment() {
             <p style={{ color: '#A08060', fontSize: '0.9rem', margin: '0 0 4px 0' }}>Registrant</p>
             <p style={{ color: '#F0E0C0', fontSize: '1.1rem', fontWeight: '700', margin: '0 0 8px 0' }}>{registration.name}</p>
             <p style={{ color: '#A08060', fontSize: '0.9rem', margin: '0 0 2px 0' }}>
-              Event: <span style={{ color: '#C8A870' }}>{registration.eventType === 'both' ? 'Technical + Non-Technical' : registration.eventType === 'technical' ? 'Technical' : 'Non-Technical'}</span>
+              Event: <span style={{ color: '#C8A870' }}>
+                {registration.eventType === 'both'
+                  ? 'Technical + Non-Technical'
+                  : registration.eventType === 'technical'
+                  ? 'Technical'
+                  : 'Non-Technical'}
+              </span>
             </p>
             <p style={{ color: '#A08060', fontSize: '0.9rem', margin: 0 }}>
               Members: <span style={{ color: '#C8A870' }}>{registration.numberOfMembers}</span>
@@ -208,7 +214,7 @@ export default function Payment() {
             />
           </div>
 
-          {/* QR Amount Display — synced from Registration page via localStorage */}
+          {/* QR Amount Display */}
           <div style={{ marginTop: '20px' }}>
             <p style={{ color: '#A08060', fontSize: '0.85rem', margin: '0 0 6px 0', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
               Amount to Scan &amp; Pay
@@ -226,7 +232,6 @@ export default function Payment() {
             >
               {displayAmount ? `₹${displayAmount}` : 'Amount not available'}
             </span>
-            {/* Hidden input holding the raw numeric amount from localStorage */}
             <input
               type="hidden"
               id="paymentAmountInput"
@@ -288,7 +293,7 @@ export default function Payment() {
               <div>
                 <Upload size={40} color="#FF6A00" style={{ marginBottom: '12px', opacity: 0.7 }} />
                 <p style={{ color: '#C8A870', fontSize: '1rem', fontWeight: '600', margin: '0 0 6px 0' }}>
-                  Click or drag & drop your screenshot here
+                  Click or drag &amp; drop your screenshot here
                 </p>
                 <p style={{ color: '#806040', fontSize: '0.85rem', margin: 0 }}>
                   Accepted formats: JPG, PNG
@@ -298,7 +303,18 @@ export default function Payment() {
           </div>
 
           {error && (
-            <div style={{ color: '#FF4444', fontSize: '0.9rem', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{
+              color: '#FF4444',
+              fontSize: '0.9rem',
+              marginTop: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(255,50,50,0.08)',
+              border: '1px solid rgba(255,50,50,0.2)',
+              borderRadius: '8px',
+              padding: '10px 14px',
+            }}>
               <AlertCircle size={16} /> {error}
             </div>
           )}
@@ -307,21 +323,21 @@ export default function Payment() {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          disabled={!screenshot || submitting}
+          disabled={!screenshot || isSubmitting}
           style={{
             width: '100%',
-            background: !screenshot || submitting
+            background: !screenshot || isSubmitting
               ? 'rgba(255,106,0,0.2)'
               : 'linear-gradient(135deg, #FF6A00, #FF2200)',
-            border: `1px solid ${!screenshot || submitting ? 'rgba(255,106,0,0.2)' : 'transparent'}`,
+            border: `1px solid ${!screenshot || isSubmitting ? 'rgba(255,106,0,0.2)' : 'transparent'}`,
             borderRadius: '10px',
-            color: !screenshot || submitting ? '#806040' : '#FFFFFF',
+            color: !screenshot || isSubmitting ? '#806040' : '#FFFFFF',
             fontFamily: '"Times New Roman", Times, serif',
             fontSize: '1.15rem',
             fontWeight: '800',
             padding: '16px',
-            cursor: !screenshot || submitting ? 'not-allowed' : 'pointer',
-            boxShadow: !screenshot || submitting ? 'none' : '0 0 20px rgba(255,106,0,0.4)',
+            cursor: !screenshot || isSubmitting ? 'not-allowed' : 'pointer',
+            boxShadow: !screenshot || isSubmitting ? 'none' : '0 0 20px rgba(255,106,0,0.4)',
             transition: 'all 0.3s ease',
             display: 'flex',
             alignItems: 'center',
@@ -330,15 +346,15 @@ export default function Payment() {
             letterSpacing: '0.05em',
           }}
         >
-          {submitting ? (
-            <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Submitting...</>
+          {isSubmitting ? (
+            <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Saving Registration...</>
           ) : (
-            'Confirm Registration'
+            'FINAL SUBMIT — Confirm Registration'
           )}
         </button>
 
         <p style={{ color: '#806040', fontSize: '0.85rem', textAlign: 'center', marginTop: '16px' }}>
-          * Screenshot upload is mandatory to complete registration
+          * Your registration will only be confirmed after successful backend save
         </p>
       </div>
     </div>

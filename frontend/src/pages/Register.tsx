@@ -3,16 +3,25 @@ import { useNavigate } from '@tanstack/react-router';
 import { useRegistration } from '../contexts/RegistrationContext';
 import CircuitPattern from '../components/CircuitPattern';
 import CountdownTimer from '../components/CountdownTimer';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import { useActor } from '../hooks/useActor';
+import { EventType } from '../backend';
 
-type EventType = 'technical' | 'non-technical' | 'both';
+type LocalEventType = 'technical' | 'non-technical' | 'both';
 
 const BASE_PRICE = 149;
 const EXTRA_PRICE = 25;
 
+function mapEventType(et: LocalEventType): EventType {
+  if (et === 'technical') return EventType.workshop;
+  if (et === 'non-technical') return EventType.seminar;
+  return EventType.competition;
+}
+
 export default function Register() {
   const navigate = useNavigate();
   const { setRegistration } = useRegistration();
+  const { actor } = useActor();
 
   const [form, setForm] = useState({
     name: '',
@@ -21,11 +30,13 @@ export default function Register() {
     year: '',
     email: '',
     phone: '',
-    eventType: 'both' as EventType,
+    eventType: 'both' as LocalEventType,
     numberOfMembers: 1,
   });
   const [additionalEventChecked, setAdditionalEventChecked] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // MUTUALLY EXCLUSIVE fee logic:
   // Checkbox OFF → total = BASE_PRICE × members, additionalFee display = ₹0
@@ -57,7 +68,7 @@ export default function Register() {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -65,21 +76,51 @@ export default function Register() {
       return;
     }
 
-    // Save total amount to localStorage before navigating to Payment page
-    localStorage.setItem('vibecxAmount', total.toString());
+    if (!actor) {
+      setSubmitError('Connection not ready. Please try again.');
+      return;
+    }
 
-    setRegistration({
-      name: form.name,
-      college: form.college,
-      department: form.department,
-      year: form.year,
-      email: form.email,
-      phone: form.phone,
-      eventType: form.eventType,
-      numberOfMembers: form.numberOfMembers,
-      totalAmount: total,
-    });
-    navigate({ to: '/payment' });
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      // Save registration data to backend BEFORE navigating to payment
+      await actor.submitRegistration(
+        form.name,
+        form.college,
+        form.department,
+        BigInt(parseInt(form.year)),
+        form.email,
+        form.phone,
+        mapEventType(form.eventType),
+        BigInt(form.numberOfMembers),
+        BigInt(total),
+        '', // screenshot not yet uploaded at this stage
+      );
+
+      // Save total amount to localStorage before navigating to Payment page
+      localStorage.setItem('vibecxAmount', total.toString());
+
+      setRegistration({
+        name: form.name,
+        college: form.college,
+        department: form.department,
+        year: form.year,
+        email: form.email,
+        phone: form.phone,
+        eventType: form.eventType,
+        numberOfMembers: form.numberOfMembers,
+        totalAmount: total,
+      });
+
+      navigate({ to: '/payment' });
+    } catch (err: unknown) {
+      console.error(err);
+      setSubmitError('Failed to save registration. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -255,7 +296,7 @@ export default function Register() {
               <label style={labelStyle}>Select Event Type *</label>
               <select
                 value={form.eventType}
-                onChange={e => setForm({ ...form, eventType: e.target.value as EventType })}
+                onChange={e => setForm({ ...form, eventType: e.target.value as LocalEventType })}
                 style={{ ...inputStyle, cursor: 'pointer' }}
                 onFocus={e => { e.target.style.borderColor = '#FF6A00'; e.target.style.boxShadow = '0 0 0 2px rgba(255,106,0,0.15)'; }}
                 onBlur={e => { e.target.style.borderColor = 'rgba(255,106,0,0.3)'; e.target.style.boxShadow = 'none'; }}
@@ -421,134 +462,100 @@ export default function Register() {
                   Fee Breakdown
                 </p>
 
-                {/* Base Registration */}
-                <div style={{ marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                      <span style={{
-                        color: '#C8A870',
-                        fontSize: '0.95rem',
-                        fontFamily: '"Times New Roman", Times, serif',
-                      }}>
-                        Base Registration
-                      </span>
-                      <div style={{
-                        color: '#C8A870',
-                        fontSize: '0.95rem',
-                        fontFamily: '"Times New Roman", Times, serif',
-                        marginTop: '2px',
-                      }}>
-                        ₹{BASE_PRICE} × {form.numberOfMembers} member{form.numberOfMembers > 1 ? 's' : ''}
-                        <br />
-                        <span style={{
-                          color: '#C8A870',
-                          fontSize: '0.95rem',
-                          fontFamily: '"Times New Roman", Times, serif',
-                        }}>
-                          Includes 1 Technical &amp; 1 Non-Technical Event
-                        </span>
-                      </div>
-                    </div>
-                    <span style={{
-                      color: '#F0E0C0',
-                      fontSize: '0.95rem',
-                      fontWeight: '700',
-                      fontFamily: '"Times New Roman", Times, serif',
-                      marginLeft: '16px',
-                      whiteSpace: 'nowrap',
-                    }}>
-                      ₹{BASE_PRICE * form.numberOfMembers}
+                {/* Base Registration row */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <div>
+                    <span style={{ color: '#C8A870', fontSize: '0.9rem' }}>
+                      Base Registration — ₹{BASE_PRICE} × {form.numberOfMembers} member{form.numberOfMembers > 1 ? 's' : ''}
+                    </span>
+                    <br />
+                    <span style={{ color: '#A08060', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                      Includes 1 Technical &amp; 1 Non-Technical Event
                     </span>
                   </div>
-                </div>
-
-                {/* Additional Event */}
-                <div style={{ marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{
-                      color: '#C8A870',
-                      fontSize: '0.95rem',
-                      fontFamily: '"Times New Roman", Times, serif',
-                    }}>
-                      Additional Event
-                      <span style={{ color: '#A08060', fontSize: '0.85rem', marginLeft: '6px' }}>
-                        (₹{EXTRA_PRICE} × {form.numberOfMembers})
-                      </span>
-                    </span>
-                    <span style={{
-                      color: additionalEventChecked ? '#F0E0C0' : '#706050',
-                      fontSize: '0.95rem',
-                      fontWeight: '700',
-                      fontFamily: '"Times New Roman", Times, serif',
-                      marginLeft: '16px',
-                    }}>
-                      {additionalEventChecked ? `₹${additionalFeeDisplay}` : '—'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div style={{
-                  height: '1px',
-                  background: 'rgba(255,106,0,0.25)',
-                  margin: '10px 0',
-                }} />
-
-                {/* Total */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{
-                    color: '#FF8C00',
-                    fontSize: '1rem',
-                    fontWeight: '700',
-                    fontFamily: '"Times New Roman", Times, serif',
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
-                  }}>
-                    Total
-                  </span>
-                  <span style={{
-                    color: '#FFD700',
-                    fontSize: '1.3rem',
-                    fontWeight: '900',
-                    fontFamily: '"Times New Roman", Times, serif',
-                    textShadow: '0 0 12px rgba(255,200,0,0.5)',
-                  }}>
-                    ₹{total}
+                  <span style={{ color: '#C8A870', fontSize: '0.9rem', fontWeight: '600', marginLeft: '12px', whiteSpace: 'nowrap' }}>
+                    ₹{BASE_PRICE * form.numberOfMembers}
                   </span>
                 </div>
+
+                {/* Additional Event row */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <span style={{ color: '#C8A870', fontSize: '0.9rem' }}>Additional Event Fee</span>
+                  <span style={{ color: '#C8A870', fontSize: '0.9rem', fontWeight: '600' }}>
+                    ₹{additionalFeeDisplay}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right: Total */}
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ color: '#A08060', fontSize: '0.85rem', margin: '0 0 4px 0', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                  Total
+                </p>
+                <p style={{
+                  color: '#FFD700',
+                  fontSize: '2rem',
+                  fontWeight: '900',
+                  margin: 0,
+                  textShadow: '0 0 16px rgba(255,215,0,0.5)',
+                }}>
+                  ₹{total}
+                </p>
               </div>
             </div>
           </div>
 
+          {/* Submit Error */}
+          {submitError && (
+            <div style={{
+              marginTop: '20px',
+              background: 'rgba(255,50,50,0.1)',
+              border: '1px solid rgba(255,50,50,0.3)',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              color: '#FF5555',
+              fontSize: '0.9rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}>
+              <AlertCircle size={16} />
+              {submitError}
+            </div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={submitting}
             style={{
-              marginTop: '32px',
+              marginTop: '28px',
               width: '100%',
-              padding: '16px',
-              background: 'linear-gradient(135deg, #FF6A00, #FF2200)',
-              border: 'none',
+              background: submitting
+                ? 'rgba(255,106,0,0.2)'
+                : 'linear-gradient(135deg, #FF6A00, #FF2200)',
+              border: submitting ? '1px solid rgba(255,106,0,0.2)' : '1px solid transparent',
               borderRadius: '10px',
-              color: '#FFFFFF',
+              color: submitting ? '#806040' : '#FFFFFF',
               fontFamily: '"Times New Roman", Times, serif',
-              fontSize: '1.1rem',
-              fontWeight: '700',
-              letterSpacing: '0.08em',
-              cursor: 'pointer',
-              boxShadow: '0 0 20px rgba(255,69,0,0.4)',
-              transition: 'opacity 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={e => {
-              (e.target as HTMLButtonElement).style.opacity = '0.9';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 0 30px rgba(255,69,0,0.6)';
-            }}
-            onMouseLeave={e => {
-              (e.target as HTMLButtonElement).style.opacity = '1';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(255,69,0,0.4)';
+              fontSize: '1.15rem',
+              fontWeight: '800',
+              padding: '16px',
+              cursor: submitting ? 'not-allowed' : 'pointer',
+              boxShadow: submitting ? 'none' : '0 0 20px rgba(255,106,0,0.4)',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              letterSpacing: '0.05em',
             }}
           >
-            Proceed to Payment →
+            {submitting ? (
+              <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> Saving Registration...</>
+            ) : (
+              'Proceed to Payment'
+            )}
           </button>
         </form>
       </div>

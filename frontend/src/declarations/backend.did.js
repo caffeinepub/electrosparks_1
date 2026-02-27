@@ -37,12 +37,18 @@ export const Registration = IDL.Record({
   'fullName' : IDL.Text,
   'email' : IDL.Text,
   'totalAmount' : IDL.Nat,
+  'timestamp' : IDL.Int,
   'paymentScreenshotFileName' : IDL.Text,
   'phone' : IDL.Text,
   'department' : IDL.Text,
   'eventType' : EventType,
 });
 export const UserProfile = IDL.Record({ 'name' : IDL.Text });
+export const Stats = IDL.Record({
+  'totalMembers' : IDL.Nat,
+  'totalRevenue' : IDL.Nat,
+  'totalRegistrations' : IDL.Nat,
+});
 
 export const idlService = IDL.Service({
   '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -76,6 +82,8 @@ export const idlService = IDL.Service({
   'getAllRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getRegistration' : IDL.Func([IDL.Nat], [IDL.Opt(Registration)], ['query']),
+  'getStats' : IDL.Func([], [Stats], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -133,12 +141,18 @@ export const idlFactory = ({ IDL }) => {
     'fullName' : IDL.Text,
     'email' : IDL.Text,
     'totalAmount' : IDL.Nat,
+    'timestamp' : IDL.Int,
     'paymentScreenshotFileName' : IDL.Text,
     'phone' : IDL.Text,
     'department' : IDL.Text,
     'eventType' : EventType,
   });
   const UserProfile = IDL.Record({ 'name' : IDL.Text });
+  const Stats = IDL.Record({
+    'totalMembers' : IDL.Nat,
+    'totalRevenue' : IDL.Nat,
+    'totalRegistrations' : IDL.Nat,
+  });
   
   return IDL.Service({
     '_caffeineStorageBlobIsLive' : IDL.Func(
@@ -172,6 +186,8 @@ export const idlFactory = ({ IDL }) => {
     'getAllRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getRegistration' : IDL.Func([IDL.Nat], [IDL.Opt(Registration)], ['query']),
+    'getStats' : IDL.Func([], [Stats], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],

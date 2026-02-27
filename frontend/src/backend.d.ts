@@ -15,10 +15,16 @@ export interface Registration {
     fullName: string;
     email: string;
     totalAmount: bigint;
+    timestamp: bigint;
     paymentScreenshotFileName: string;
     phone: string;
     department: string;
     eventType: EventType;
+}
+export interface Stats {
+    totalMembers: bigint;
+    totalRevenue: bigint;
+    totalRegistrations: bigint;
 }
 export interface UserProfile {
     name: string;
@@ -38,6 +44,8 @@ export interface backendInterface {
     getAllRegistrations(): Promise<Array<Registration>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getRegistration(id: bigint): Promise<Registration | null>;
+    getStats(): Promise<Stats>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
