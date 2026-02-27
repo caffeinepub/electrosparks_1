@@ -26,6 +26,13 @@ export interface Stats {
     totalRevenue: bigint;
     totalRegistrations: bigint;
 }
+export type RegistrationResult = {
+    __kind__: "notFound";
+    notFound: null;
+} | {
+    __kind__: "success";
+    success: bigint;
+};
 export interface UserProfile {
     name: string;
 }
@@ -41,11 +48,14 @@ export enum UserRole {
 }
 export interface backendInterface {
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    getAllRegistrations(): Promise<Array<Registration>>;
+    deleteRegistration(id: bigint): Promise<RegistrationResult>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getOpenRegistrations(): Promise<Array<Registration>>;
     getRegistration(id: bigint): Promise<Registration | null>;
+    getRegistrationsByEventType(eventType: EventType): Promise<Array<Registration>>;
     getStats(): Promise<Stats>;
+    getStatsByEventType(eventType: EventType): Promise<Stats>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;

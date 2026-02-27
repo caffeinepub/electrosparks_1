@@ -1,44 +1,34 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "VibECX-2K26 event registration website with secure admin panel. Registration form saves all participant data and payment screenshots to backend; success message only shown after confirmed save. Hidden /admin route with login-protected dashboard showing stats and all registrations.",
+  "summary": "Multi-page website with Admin Dashboard, registration system, and themed UI. Currently applying global warm beige marble background (#DCCBB5) with dark overlay across all pages.",
   "architectural_notes": [
-    "Backend database required for persistent storage of registration records (all fields + payment screenshot file)",
-    "Admin credentials hardcoded: Username=VibECX-2K26, Password=VibECX@2K26; route /admin hidden from navbar",
-    "Registration flow: backend save must succeed before showing success message; failure must not show success"
+    "Global body background uses warm beige marble color (#DCCBB5) with dark overlay (rgba(0,0,0,0.75)) for text readability"
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-the-registration-submission-flow-so-that-the-final-submit-action-on-the-payment-page-first-saves-all-registration-data-including-the-uploaded-payment-screenshot-to-the-backend-only-display-the-registration-successful-success-page-if-the-backend-save-returns-a-success-result-if-the-backend-call-fails-or-returns-an-error-do-not-navigate-to-the-success-page-instead-show-an-inline-error-message-on-the-payment-page",
-      "title": "Update the registration submission flow so that the FINAL SUBMIT action on the Payment page first saves all registration data (including the uploaded payment screenshot) to the backend. Only display the 'Registration Successful' success page if the backend save returns a success result. If the backend call fails or returns an error, do NOT navigate to the success page — instead show an inline error message on the Payment page.",
+      "id": "feature-set-the-global-body-background-color-to-a-warm-beige-marble-tone-dccbb5-across-the-entire-application-by-updating-the-global-stylesheet-frontend-src-index-css-this-must-apply-to-all-pages-home-technical-events-non-technical-events-register-payment-success-contact-admin-and-dashboard",
+      "title": "Set the global body background color to a warm beige marble tone (#DCCBB5) across the entire application by updating the global stylesheet (frontend/src/index.css). This must apply to all pages: Home, Technical Events, Non-Technical Events, Register, Payment, Success, Contact, Admin, and Dashboard.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-full-viewport-fixed-dark-overlay-element-with-background-rgba-0-0-0-0-75-and-z-index-below-all-page-content-z-index-0-or-equivalent-so-that-neon-orange-glowing-elements-remain-visually-premium-and-text-stays-readable-against-the-beige-background-this-overlay-must-not-block-any-interactions-or-sit-above-any-content-layer",
+      "title": "Add a full-viewport fixed dark overlay element with background rgba(0,0,0,0.75) and z-index below all page content (z-index: 0 or equivalent) so that neon/orange glowing elements remain visually premium and text stays readable against the beige background. This overlay must not block any interactions or sit above any content layer.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-an-admin-login-screen-at-admin-that-requires-entry-of-username-and-password-before-granting-access-to-the-dashboard-hard-code-the-valid-credentials-as-username-vibecx-2k26-and-password-vibecx-2k26-validated-on-the-backend-via-the-existing-adminlogin-endpoint-if-credentials-are-incorrect-display-the-message-invalid-username-or-password-the-dashboard-content-must-not-render-until-login-is-successful",
-      "title": "Implement an admin login screen at /admin that requires entry of Username and Password before granting access to the dashboard. Hard-code the valid credentials as Username: VibECX-2K26 and Password: VibECX@2K26 (validated on the backend via the existing adminLogin endpoint). If credentials are incorrect, display the message 'Invalid Username or Password'. The dashboard content must not render until login is successful.",
+      "id": "feature-ensure-that-all-existing-layout-spacing-font-sizes-animations-neon-highlights-circuit-patterns-countdowntimer-navbar-footer-and-all-functional-components-remain-completely-unchanged-only-global-background-styling-is-modified",
+      "title": "Ensure that all existing layout, spacing, font sizes, animations, neon highlights, circuit patterns, CountdownTimer, Navbar, Footer, and all functional components remain completely unchanged. Only global background styling is modified.",
       "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-build-or-update-the-admindashboard-component-to-display-three-stat-cards-at-the-top-total-registrations-total-participants-total-revenue-and-a-table-below-listing-all-registrations-with-columns-name-college-department-phone-event-type-members-amount-timestamp-and-payment-screenshot-the-payment-screenshot-cell-must-show-a-clickable-thumbnail-that-opens-the-full-image-in-a-preview-lightbox-or-new-tab-the-table-must-be-sorted-latest-first-and-reflect-any-new-registrations-immediately-after-page-load-refresh",
-      "title": "Build or update the AdminDashboard component to display three stat cards at the top (Total Registrations, Total Participants, Total Revenue) and a table below listing all registrations with columns: Name, College, Department, Phone, Event Type, Members, Amount, Timestamp, and Payment Screenshot. The Payment Screenshot cell must show a clickable thumbnail that opens the full image in a preview (lightbox or new tab). The table must be sorted latest-first and reflect any new registrations immediately after page load/refresh.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-style-the-admin-login-screen-and-dashboard-using-the-same-dark-theme-as-the-rest-of-the-site-dark-backgrounds-orange-gold-accents-the-layout-must-be-clean-professional-minimally-animated-and-fully-responsive-on-mobile-and-desktop",
-      "title": "Style the admin login screen and dashboard using the same dark theme as the rest of the site (dark backgrounds, orange-gold accents). The layout must be clean, professional, minimally animated, and fully responsive on mobile and desktop.",
-      "reqIds": [
-        "REQ-7"
+        "REQ-3"
       ],
       "version": 1
     }
@@ -46,44 +36,8 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Registration form saves all fields + payment screenshot to backend; success message only on confirmed save",
+      "summary": "Change global background to warm beige marble (#DCCBB5) with dark overlay (rgba(0,0,0,0.75)) across all pages",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Hidden /admin route with login screen (Username: VibECX-2K26, Password: VibECX@2K26); dashboard blocked without login",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Admin dashboard: total registrations, participants, revenue stats + sortable table with all registration fields and clickable payment screenshot previews",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Update the backend actor to store a complete Registration record containing: Full Name, College, Department, Year of Study, Email, Phone Number, Selected Event Type, Number of Members, Total Amount, Payment Screenshot (as Blob), and Timestamp. All records must persist in stable storage so no data is lost across canister upgrades or page refreshes.",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Ensure the /admin route is hidden from the Navbar and not linked anywhere in the public-facing UI. The route must exist at /admin but must not appear in the navigation menu.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Build or update the backend to expose admin-only query endpoints (protected by session token) that return: (1) total count of registrations, (2) total participants count (sum of Number of Members across all records), (3) total revenue (sum of Total Amount across all records), and (4) the full list of all Registration records sorted by timestamp descending (latest first).",
-      "reqIds": [
-        "REQ-5"
-      ],
       "status": "pending"
     }
   ],

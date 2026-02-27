@@ -1,32 +1,31 @@
 import Map "mo:core/Map";
-import Iter "mo:core/Iter";
 import Nat "mo:core/Nat";
-import Text "mo:core/Text";
-import Int "mo:core/Int";
 import List "mo:core/List";
-import Array "mo:core/Array";
+import Int "mo:core/Int";
 import Time "mo:core/Time";
 import Principal "mo:core/Principal";
 import Runtime "mo:core/Runtime";
-import Migration "migration";
+
+import Storage "blob-storage/Storage";
 import MixinStorage "blob-storage/Mixin";
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 
-// Use migration component for continuous data persistence
-(with migration = Migration.run)
 actor {
-  // Mixin component state
-  let accessControlState = AccessControl.initState();
-
-  include MixinAuthorization(accessControlState);
   include MixinStorage();
+
+  let accessControlState = AccessControl.initState();
+  include MixinAuthorization(accessControlState);
+
+  func getCurrentTime() : Int {
+    Time.now();
+  };
 
   public type UserProfile = {
     name : Text;
   };
 
-  let userProfiles = Map.empty<Principal, UserProfile>();
+  var userProfiles = Map.empty<Principal, UserProfile>();
 
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
@@ -36,8 +35,8 @@ actor {
   };
 
   public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
-    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
-      Runtime.trap("Unauthorized: Can only view your own profile");
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can get profiles");
     };
     userProfiles.get(user);
   };
@@ -49,13 +48,13 @@ actor {
     userProfiles.add(caller, profile);
   };
 
-  type EventType = {
+  public type EventType = {
     #workshop;
     #competition;
     #seminar;
   };
 
-  type Registration = {
+  public type Registration = {
     id : Nat;
     fullName : Text;
     collegeName : Text;
@@ -70,18 +69,22 @@ actor {
     timestamp : Int;
   };
 
-  type RegistrationState = {
+  public type RegistrationState = {
     entries : Map.Map<Nat, Registration>;
     nextId : Nat;
   };
 
-  // Core state containing registration data
   var state : RegistrationState = {
     entries = Map.empty<Nat, Registration>();
     nextId = 0;
   };
 
-  // Open to anyone (including guests/anonymous) — public registration form
+  public type RegistrationResult = {
+    #success : Nat;
+    #notFound;
+  };
+
+  // Public registration form
   public shared ({ caller }) func submitRegistration(
     fullName : Text,
     collegeName : Text,
@@ -107,24 +110,43 @@ actor {
       numberOfMembers;
       totalAmount;
       paymentScreenshotFileName;
-      timestamp = Time.now();
+      timestamp = getCurrentTime();
     };
     state.entries.add(id, registration);
     state := { state with nextId = id + 1 };
     id;
   };
 
-  // Admin-only queries for aggregate stats
-  type Stats = {
+  // Open to everyone: view all registrations
+  public query ({ caller }) func getOpenRegistrations() : async [Registration] {
+    let entries = state.entries.values().toArray();
+    entries.sort(
+      func(a, b) {
+        Int.compare(b.timestamp, a.timestamp);
+      }
+    );
+  };
+
+  // Admins only: view a specific registration
+  public query ({ caller }) func getRegistration(id : Nat) : async ?Registration {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can view a specific registration.");
+    };
+    state.entries.get(id);
+  };
+
+  public type Stats = {
     totalRegistrations : Nat;
     totalMembers : Nat;
     totalRevenue : Nat;
   };
 
+  // Admins only: fetch aggregate stats
   public query ({ caller }) func getStats() : async Stats {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admins can view stats");
+      Runtime.trap("Unauthorized: Only admins can fetch stats.");
     };
+
     let allEntries = state.entries.values().toArray();
     let totalRegistrations = allEntries.size();
 
@@ -142,24 +164,52 @@ actor {
     };
   };
 
-  // Admin-only query to fetch all registrations sorted by timestamp with most recent first
-  public query ({ caller }) func getAllRegistrations() : async [Registration] {
+  // Admin: get all registrations filtered by event type
+  public query ({ caller }) func getRegistrationsByEventType(eventType : EventType) : async [Registration] {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admins can view all registrations");
+      Runtime.trap("Unauthorized: Only admins can filter by event type");
     };
-    let entries = state.entries.values().toArray();
-    entries.sort(
-      func(a, b) {
-        Int.compare(b.timestamp, a.timestamp);
-      }
-    );
+    let filtered = state.entries.values().toArray();
+    filtered.filter(func(reg) { reg.eventType == eventType });
   };
 
-  // Admin-only query to fetch single registration by id
-  public query ({ caller }) func getRegistration(id : Nat) : async ?Registration {
+  // Admin: get statistics for a specific event type
+  public query ({ caller }) func getStatsByEventType(eventType : EventType) : async Stats {
     if (not (AccessControl.isAdmin(accessControlState, caller))) {
-      Runtime.trap("Unauthorized: Only admins can view registration details");
+      Runtime.trap("Unauthorized: Only admins can get event type stats");
     };
-    state.entries.get(id);
+
+    let filtered = state.entries.values().toArray();
+    let filteredEntries = filtered.filter(func(reg) { reg.eventType == eventType });
+    let totalRegistrations = filteredEntries.size();
+
+    var totalMembers = 0;
+    var totalRevenue = 0;
+    for (reg in filteredEntries.values()) {
+      totalMembers += reg.numberOfMembers;
+      totalRevenue += reg.totalAmount;
+    };
+
+    {
+      totalRegistrations;
+      totalMembers;
+      totalRevenue;
+    };
+  };
+
+  // Admin-only delete registration (persistent removal)
+  public shared ({ caller }) func deleteRegistration(id : Nat) : async RegistrationResult {
+    if (not (AccessControl.isAdmin(accessControlState, caller))) {
+      Runtime.trap("Unauthorized: Only admins can permanently delete registrations");
+    };
+    switch (state.entries.get(id)) {
+      case (null) {
+        #notFound;
+      };
+      case (?_) {
+        state.entries.remove(id);
+        #success(id);
+      };
+    };
   };
 };

@@ -73,12 +73,12 @@ export default function Payment() {
         fullName: registration.name,
         collegeName: registration.college,
         department: registration.department,
-        year: parseInt(registration.year),
+        year: BigInt(parseInt(registration.year)),
         email: registration.email,
         phone: registration.phone,
         eventType: mapEventType(registration.eventType),
-        numberOfMembers: registration.numberOfMembers,
-        totalAmount: registration.totalAmount,
+        numberOfMembers: BigInt(registration.numberOfMembers),
+        totalAmount: BigInt(registration.totalAmount),
         paymentScreenshotFileName: screenshot.name,
       });
 

@@ -24,6 +24,11 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
+export const RegistrationResult = IDL.Variant({
+  'notFound' : IDL.Null,
+  'success' : IDL.Nat,
+});
+export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const EventType = IDL.Variant({
   'seminar' : IDL.Null,
   'workshop' : IDL.Null,
@@ -43,7 +48,6 @@ export const Registration = IDL.Record({
   'department' : IDL.Text,
   'eventType' : EventType,
 });
-export const UserProfile = IDL.Record({ 'name' : IDL.Text });
 export const Stats = IDL.Record({
   'totalMembers' : IDL.Nat,
   'totalRevenue' : IDL.Nat,
@@ -79,11 +83,18 @@ export const idlService = IDL.Service({
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-  'getAllRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
+  'deleteRegistration' : IDL.Func([IDL.Nat], [RegistrationResult], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getOpenRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
   'getRegistration' : IDL.Func([IDL.Nat], [IDL.Opt(Registration)], ['query']),
+  'getRegistrationsByEventType' : IDL.Func(
+      [EventType],
+      [IDL.Vec(Registration)],
+      ['query'],
+    ),
   'getStats' : IDL.Func([], [Stats], ['query']),
+  'getStatsByEventType' : IDL.Func([EventType], [Stats], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -128,6 +139,11 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
+  const RegistrationResult = IDL.Variant({
+    'notFound' : IDL.Null,
+    'success' : IDL.Nat,
+  });
+  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const EventType = IDL.Variant({
     'seminar' : IDL.Null,
     'workshop' : IDL.Null,
@@ -147,7 +163,6 @@ export const idlFactory = ({ IDL }) => {
     'department' : IDL.Text,
     'eventType' : EventType,
   });
-  const UserProfile = IDL.Record({ 'name' : IDL.Text });
   const Stats = IDL.Record({
     'totalMembers' : IDL.Nat,
     'totalRevenue' : IDL.Nat,
@@ -183,11 +198,18 @@ export const idlFactory = ({ IDL }) => {
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
-    'getAllRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
+    'deleteRegistration' : IDL.Func([IDL.Nat], [RegistrationResult], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getOpenRegistrations' : IDL.Func([], [IDL.Vec(Registration)], ['query']),
     'getRegistration' : IDL.Func([IDL.Nat], [IDL.Opt(Registration)], ['query']),
+    'getRegistrationsByEventType' : IDL.Func(
+        [EventType],
+        [IDL.Vec(Registration)],
+        ['query'],
+      ),
     'getStats' : IDL.Func([], [Stats], ['query']),
+    'getStatsByEventType' : IDL.Func([EventType], [Stats], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],

@@ -13,6 +13,7 @@ import Payment from './pages/Payment';
 import Success from './pages/Success';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
+import Dashboard from './pages/Dashboard';
 
 const queryClient = new QueryClient();
 
@@ -28,17 +29,12 @@ function Layout() {
   );
 }
 
-// Admin layout — no Navbar/Footer
-function AdminLayout() {
-  return (
-    <div className="min-h-screen bg-black">
-      <Outlet />
-    </div>
-  );
+function FullscreenLayout() {
+  return <Outlet />;
 }
 
 const rootRoute = createRootRoute({ component: Layout });
-const adminRootRoute = createRootRoute({ component: AdminLayout });
+const fullscreenRootRoute = createRootRoute({ component: FullscreenLayout });
 
 const homeRoute = createRoute({ getParentRoute: () => rootRoute, path: '/', component: Home });
 const technicalRoute = createRoute({ getParentRoute: () => rootRoute, path: '/technical', component: TechnicalEvents });
@@ -48,6 +44,7 @@ const paymentRoute = createRoute({ getParentRoute: () => rootRoute, path: '/paym
 const successRoute = createRoute({ getParentRoute: () => rootRoute, path: '/success', component: Success });
 const contactRoute = createRoute({ getParentRoute: () => rootRoute, path: '/contact', component: Contact });
 const adminRoute = createRoute({ getParentRoute: () => rootRoute, path: '/admin', component: Admin });
+const dashboardRoute = createRoute({ getParentRoute: () => rootRoute, path: '/dashboard', component: Dashboard });
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
@@ -58,6 +55,7 @@ const routeTree = rootRoute.addChildren([
   successRoute,
   contactRoute,
   adminRoute,
+  dashboardRoute,
 ]);
 
 const router = createRouter({ routeTree });

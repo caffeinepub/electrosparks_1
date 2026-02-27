@@ -1,89 +1,82 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import { EventType } from '../backend';
+import { Registration, EventType } from '../backend';
 
 export function useSubmitRegistration() {
   const { actor } = useActor();
-  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: {
+    mutationFn: async (data: {
       fullName: string;
       collegeName: string;
       department: string;
-      year: number;
+      year: bigint;
       email: string;
       phone: string;
       eventType: EventType;
-      numberOfMembers: number;
-      totalAmount: number;
+      numberOfMembers: bigint;
+      totalAmount: bigint;
       paymentScreenshotFileName: string;
     }) => {
       if (!actor) throw new Error('Actor not available');
       return actor.submitRegistration(
-        params.fullName,
-        params.collegeName,
-        params.department,
-        BigInt(params.year),
-        params.email,
-        params.phone,
-        params.eventType,
-        BigInt(params.numberOfMembers),
-        BigInt(params.totalAmount),
-        params.paymentScreenshotFileName
+        data.fullName,
+        data.collegeName,
+        data.department,
+        data.year,
+        data.email,
+        data.phone,
+        data.eventType,
+        data.numberOfMembers,
+        data.totalAmount,
+        data.paymentScreenshotFileName
       );
+    },
+  });
+}
+
+export function useGetAllRegistrations() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Registration[]>({
+    queryKey: ['registrations'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getOpenRegistrations();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useGetStats() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery({
+    queryKey: ['stats'],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getStats();
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useDeleteRegistration() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: bigint) => {
+      if (!actor) throw new Error('Actor not available');
+      const result = await actor.deleteRegistration(id);
+      if (result.__kind__ === 'notFound') {
+        throw new Error('Registration not found');
+      }
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['registrations'] });
-      queryClient.invalidateQueries({ queryKey: ['adminStats'] });
-      queryClient.invalidateQueries({ queryKey: ['adminRegistrations'] });
+      queryClient.invalidateQueries({ queryKey: ['stats'] });
     },
-  });
-}
-
-// Client-side credential validation — backend uses principal-based access control
-// The hardcoded credentials gate the admin UI; backend calls use the actor's identity
-export function useAdminLogin() {
-  return useMutation({
-    mutationFn: async (params: { username: string; password: string }) => {
-      if (
-        params.username === 'VibECX-2K26' &&
-        params.password === 'VibECX@2K26'
-      ) {
-        // Return a client-side session token to gate the dashboard UI
-        return `admin-session-${Date.now()}`;
-      }
-      throw new Error('Invalid Username or Password');
-    },
-  });
-}
-
-export function useAdminStats(isAuthenticated: boolean) {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery({
-    queryKey: ['adminStats'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getStats();
-    },
-    enabled: !!actor && !actorFetching && isAuthenticated,
-    refetchOnMount: true,
-    refetchInterval: 30000,
-  });
-}
-
-export function useAllRegistrations(isAuthenticated: boolean) {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery({
-    queryKey: ['adminRegistrations'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.getAllRegistrations();
-    },
-    enabled: !!actor && !actorFetching && isAuthenticated,
-    refetchOnMount: true,
-    refetchInterval: 30000,
   });
 }

@@ -1,15 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Add a secure, hidden admin panel with full registration backend persistence, including payment screenshot storage and protected admin dashboard.
+**Goal:** Apply a warm beige marble global background color with a dark overlay across all pages of the VibECX-2K26 application.
 
 **Planned changes:**
-- Update the backend `Registration` type to store all fields: Full Name, College, Department, Year of Study, Email, Phone Number, Selected Event Type, Number of Members, Total Amount, Payment Screenshot (Blob), and Timestamp in stable storage
-- Update the `submitRegistration` flow so the Payment page calls the backend before navigating; only route to `/success` on a confirmed backend save, otherwise show an inline error
-- Add a hidden `/admin` route that never appears in the Navbar or any public navigation
-- Implement an admin login screen at `/admin` with Username/Password fields validated on the backend (credentials: VibECX-2K26 / VibECX@2K26); show "Invalid Username or Password" on failure and block dashboard rendering until login succeeds
-- Add backend admin-only query endpoints (protected by session token) returning: total registrations count, total participants count, total revenue, and all registrations sorted by timestamp descending
-- Build the AdminDashboard component with three stat cards (Total Registrations, Total Participants, Total Revenue) and a full registrations table (Name, College, Department, Phone, Event Type, Members, Amount, Timestamp, Payment Screenshot thumbnail with click-to-preview)
-- Style the admin login and dashboard with the same dark theme and orange-gold accents used throughout the site; fully responsive with horizontal table scroll on mobile
+- Set the global `body` background color to `#DCCBB5` (warm beige marble tone) in `frontend/src/index.css`
+- Add a full-viewport fixed dark overlay (`rgba(0,0,0,0.75)`) via global CSS, positioned above the body background but below all page content (using `z-index` and `pointer-events: none`)
+- No changes to any page component files, layout, animations, neon glow effects, spacing, or functionality
 
-**User-visible outcome:** Admins can navigate directly to `/admin`, log in with secure credentials, and view a professional dashboard showing aggregated stats and a full sortable table of all registrations including clickable payment screenshot previews. Public users see no trace of the admin route, and registrations are only confirmed after successful backend persistence.
+**User-visible outcome:** All pages (Home, Technical Events, Non-Technical Events, Register, Payment, Success, Contact, Admin, Dashboard) display a warm beige marble background with a dark overlay that keeps neon/orange glow elements visually premium and text readable.

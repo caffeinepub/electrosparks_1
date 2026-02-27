@@ -24,7 +24,7 @@ const staffCoordinators = [
 const studentCoordinators = [
   { name: 'Sakthikrishnan.S', phone: '8838204730' },
   { name: 'Manosri.S.V', phone: '9449143918' },
-  { name: 'Ayyanar', phone: '7397057124' },
+  { name: 'Ayyanar.G', phone: '7397057124' },
 ];
 
 // ─── Shared glass card style ──────────────────────────────────────────────────

@@ -27,6 +27,8 @@ export interface Registration {
   'department' : string,
   'eventType' : EventType,
 }
+export type RegistrationResult = { 'notFound' : null } |
+  { 'success' : bigint };
 export interface Stats {
   'totalMembers' : bigint,
   'totalRevenue' : bigint,
@@ -65,11 +67,14 @@ export interface _SERVICE {
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
-  'getAllRegistrations' : ActorMethod<[], Array<Registration>>,
+  'deleteRegistration' : ActorMethod<[bigint], RegistrationResult>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getOpenRegistrations' : ActorMethod<[], Array<Registration>>,
   'getRegistration' : ActorMethod<[bigint], [] | [Registration]>,
+  'getRegistrationsByEventType' : ActorMethod<[EventType], Array<Registration>>,
   'getStats' : ActorMethod<[], Stats>,
+  'getStatsByEventType' : ActorMethod<[EventType], Stats>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,

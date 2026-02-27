@@ -111,6 +111,13 @@ export interface Stats {
     totalRevenue: bigint;
     totalRegistrations: bigint;
 }
+export type RegistrationResult = {
+    __kind__: "notFound";
+    notFound: null;
+} | {
+    __kind__: "success";
+    success: bigint;
+};
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
@@ -141,17 +148,20 @@ export interface backendInterface {
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
     _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
-    getAllRegistrations(): Promise<Array<Registration>>;
+    deleteRegistration(id: bigint): Promise<RegistrationResult>;
     getCallerUserProfile(): Promise<UserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
+    getOpenRegistrations(): Promise<Array<Registration>>;
     getRegistration(id: bigint): Promise<Registration | null>;
+    getRegistrationsByEventType(eventType: EventType): Promise<Array<Registration>>;
     getStats(): Promise<Stats>;
+    getStatsByEventType(eventType: EventType): Promise<Stats>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitRegistration(fullName: string, collegeName: string, department: string, year: bigint, email: string, phone: string, eventType: EventType, numberOfMembers: bigint, totalAmount: bigint, paymentScreenshotFileName: string): Promise<bigint>;
 }
-import type { EventType as _EventType, Registration as _Registration, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { EventType as _EventType, Registration as _Registration, RegistrationResult as _RegistrationResult, UserProfile as _UserProfile, UserRole as _UserRole, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -266,60 +276,88 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getAllRegistrations(): Promise<Array<Registration>> {
+    async deleteRegistration(arg0: bigint): Promise<RegistrationResult> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllRegistrations();
-                return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
+                const result = await this.actor.deleteRegistration(arg0);
+                return from_candid_RegistrationResult_n10(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllRegistrations();
-            return from_candid_vec_n10(this._uploadFile, this._downloadFile, result);
+            const result = await this.actor.deleteRegistration(arg0);
+            return from_candid_RegistrationResult_n10(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserProfile(): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserProfile();
-                return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserProfile();
-            return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
         }
     }
     async getCallerUserRole(): Promise<UserRole> {
         if (this.processError) {
             try {
                 const result = await this.actor.getCallerUserRole();
-                return from_candid_UserRole_n16(this._uploadFile, this._downloadFile, result);
+                return from_candid_UserRole_n13(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getCallerUserRole();
-            return from_candid_UserRole_n16(this._uploadFile, this._downloadFile, result);
+            return from_candid_UserRole_n13(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getOpenRegistrations(): Promise<Array<Registration>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getOpenRegistrations();
+                return from_candid_vec_n15(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getOpenRegistrations();
+            return from_candid_vec_n15(this._uploadFile, this._downloadFile, result);
         }
     }
     async getRegistration(arg0: bigint): Promise<Registration | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getRegistration(arg0);
-                return from_candid_opt_n18(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getRegistration(arg0);
-            return from_candid_opt_n18(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n20(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getRegistrationsByEventType(arg0: EventType): Promise<Array<Registration>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getRegistrationsByEventType(to_candid_EventType_n21(this._uploadFile, this._downloadFile, arg0));
+                return from_candid_vec_n15(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getRegistrationsByEventType(to_candid_EventType_n21(this._uploadFile, this._downloadFile, arg0));
+            return from_candid_vec_n15(this._uploadFile, this._downloadFile, result);
         }
     }
     async getStats(): Promise<Stats> {
@@ -336,18 +374,32 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async getStatsByEventType(arg0: EventType): Promise<Stats> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getStatsByEventType(to_candid_EventType_n21(this._uploadFile, this._downloadFile, arg0));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getStatsByEventType(to_candid_EventType_n21(this._uploadFile, this._downloadFile, arg0));
+            return result;
+        }
+    }
     async getUserProfile(arg0: Principal): Promise<UserProfile | null> {
         if (this.processError) {
             try {
                 const result = await this.actor.getUserProfile(arg0);
-                return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getUserProfile(arg0);
-            return from_candid_opt_n15(this._uploadFile, this._downloadFile, result);
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
         }
     }
     async isCallerAdmin(): Promise<boolean> {
@@ -381,35 +433,38 @@ export class Backend implements backendInterface {
     async submitRegistration(arg0: string, arg1: string, arg2: string, arg3: bigint, arg4: string, arg5: string, arg6: EventType, arg7: bigint, arg8: bigint, arg9: string): Promise<bigint> {
         if (this.processError) {
             try {
-                const result = await this.actor.submitRegistration(arg0, arg1, arg2, arg3, arg4, arg5, to_candid_EventType_n19(this._uploadFile, this._downloadFile, arg6), arg7, arg8, arg9);
+                const result = await this.actor.submitRegistration(arg0, arg1, arg2, arg3, arg4, arg5, to_candid_EventType_n21(this._uploadFile, this._downloadFile, arg6), arg7, arg8, arg9);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.submitRegistration(arg0, arg1, arg2, arg3, arg4, arg5, to_candid_EventType_n19(this._uploadFile, this._downloadFile, arg6), arg7, arg8, arg9);
+            const result = await this.actor.submitRegistration(arg0, arg1, arg2, arg3, arg4, arg5, to_candid_EventType_n21(this._uploadFile, this._downloadFile, arg6), arg7, arg8, arg9);
             return result;
         }
     }
 }
-function from_candid_EventType_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _EventType): EventType {
+function from_candid_EventType_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _EventType): EventType {
+    return from_candid_variant_n19(_uploadFile, _downloadFile, value);
+}
+function from_candid_RegistrationResult_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _RegistrationResult): RegistrationResult {
+    return from_candid_variant_n11(_uploadFile, _downloadFile, value);
+}
+function from_candid_Registration_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Registration): Registration {
+    return from_candid_record_n17(_uploadFile, _downloadFile, value);
+}
+function from_candid_UserRole_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
     return from_candid_variant_n14(_uploadFile, _downloadFile, value);
-}
-function from_candid_Registration_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Registration): Registration {
-    return from_candid_record_n12(_uploadFile, _downloadFile, value);
-}
-function from_candid_UserRole_n16(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _UserRole): UserRole {
-    return from_candid_variant_n17(_uploadFile, _downloadFile, value);
 }
 function from_candid__CaffeineStorageRefillResult_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: __CaffeineStorageRefillResult): _CaffeineStorageRefillResult {
     return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
+function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_UserProfile]): UserProfile | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_opt_n18(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Registration]): Registration | null {
-    return value.length === 0 ? null : from_candid_Registration_n11(_uploadFile, _downloadFile, value[0]);
+function from_candid_opt_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Registration]): Registration | null {
+    return value.length === 0 ? null : from_candid_Registration_n16(_uploadFile, _downloadFile, value[0]);
 }
 function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [boolean]): boolean | null {
     return value.length === 0 ? null : value[0];
@@ -417,7 +472,7 @@ function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
 function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
     numberOfMembers: bigint;
     collegeName: string;
@@ -456,7 +511,7 @@ function from_candid_record_n12(_uploadFile: (file: ExternalBlob) => Promise<Uin
         paymentScreenshotFileName: value.paymentScreenshotFileName,
         phone: value.phone,
         department: value.department,
-        eventType: from_candid_EventType_n13(_uploadFile, _downloadFile, value.eventType)
+        eventType: from_candid_EventType_n18(_uploadFile, _downloadFile, value.eventType)
     };
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
@@ -471,16 +526,26 @@ function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint
         topped_up_amount: record_opt_to_undefined(from_candid_opt_n7(_uploadFile, _downloadFile, value.topped_up_amount))
     };
 }
-function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    seminar: null;
+function from_candid_variant_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    notFound: null;
 } | {
-    workshop: null;
+    success: bigint;
+}): {
+    __kind__: "notFound";
+    notFound: null;
 } | {
-    competition: null;
-}): EventType {
-    return "seminar" in value ? EventType.seminar : "workshop" in value ? EventType.workshop : "competition" in value ? EventType.competition : value;
+    __kind__: "success";
+    success: bigint;
+} {
+    return "notFound" in value ? {
+        __kind__: "notFound",
+        notFound: value.notFound
+    } : "success" in value ? {
+        __kind__: "success",
+        success: value.success
+    } : value;
 }
-function from_candid_variant_n17(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_variant_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     admin: null;
 } | {
     user: null;
@@ -489,11 +554,20 @@ function from_candid_variant_n17(_uploadFile: (file: ExternalBlob) => Promise<Ui
 }): UserRole {
     return "admin" in value ? UserRole.admin : "user" in value ? UserRole.user : "guest" in value ? UserRole.guest : value;
 }
-function from_candid_vec_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Registration>): Array<Registration> {
-    return value.map((x)=>from_candid_Registration_n11(_uploadFile, _downloadFile, x));
+function from_candid_variant_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    seminar: null;
+} | {
+    workshop: null;
+} | {
+    competition: null;
+}): EventType {
+    return "seminar" in value ? EventType.seminar : "workshop" in value ? EventType.workshop : "competition" in value ? EventType.competition : value;
 }
-function to_candid_EventType_n19(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EventType): _EventType {
-    return to_candid_variant_n20(_uploadFile, _downloadFile, value);
+function from_candid_vec_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_Registration>): Array<Registration> {
+    return value.map((x)=>from_candid_Registration_n16(_uploadFile, _downloadFile, x));
+}
+function to_candid_EventType_n21(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EventType): _EventType {
+    return to_candid_variant_n22(_uploadFile, _downloadFile, value);
 }
 function to_candid_UserRole_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: UserRole): _UserRole {
     return to_candid_variant_n9(_uploadFile, _downloadFile, value);
@@ -513,7 +587,7 @@ function to_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8A
         proposed_top_up_amount: value.proposed_top_up_amount ? candid_some(value.proposed_top_up_amount) : candid_none()
     };
 }
-function to_candid_variant_n20(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EventType): {
+function to_candid_variant_n22(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EventType): {
     seminar: null;
 } | {
     workshop: null;

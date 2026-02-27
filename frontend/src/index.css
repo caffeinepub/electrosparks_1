@@ -60,10 +60,30 @@
   }
 
   body {
-    background-color: oklch(0.06 0.01 240);
+    /* Warm beige marble background (~#DCCBB5) */
+    background-color: oklch(0.83 0.04 65);
     color: oklch(0.95 0.02 200);
     font-family: 'Rajdhani', sans-serif;
     overflow-x: hidden;
+  }
+
+  /* Full-viewport dark overlay above the beige background, below all page content */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Ensure the React root sits above the overlay */
+  #root {
+    position: relative;
+    z-index: 1;
   }
 
   ::-webkit-scrollbar {
